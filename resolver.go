@@ -21,6 +21,7 @@ func NewResolver() *Resolver {
 }
 
 // Resolve resolves the dependency graph of the providers and returns a source code generator.
+// It uses topological sorting to ensure the correct order of provider initialization.
 func (r *Resolver) Resolve() (*Generator, error) {
 	for _, p := range r.providers {
 		if err := p.CheckError(); err != nil {
