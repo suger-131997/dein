@@ -4,9 +4,9 @@ import (
 	"errors"
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/generator"
-	"github.com/suger-131997/dein/internal/priorityqueue"
 	"github.com/suger-131997/dein/internal/provider"
 	"github.com/suger-131997/dein/internal/symbols"
+	"github.com/suger-131997/dein/internal/utils"
 	"sort"
 )
 
@@ -58,23 +58,25 @@ func (r *Resolver) Resolve() (*Generator, error) {
 
 	resolvedProviders := make([]*provider.Provider, 0, len(graph))
 
-	pq := priorityqueue.NewPriorityQueue()
+	pq := utils.NewPriorityQueue(func(i, j *provider.Provider) bool {
+		return i.Out().Less(j.Out())
+	})
 
 	for c, i := range indegrees {
 		if i == 0 {
-			priorityqueue.Push(pq, providers[c])
+			utils.Push(pq, providers[c])
 		}
 	}
 
 	for pq.Len() > 0 {
-		from := priorityqueue.Pop(pq)
+		from := utils.Pop(pq)
 
 		resolvedProviders = append(resolvedProviders, from)
 
 		for _, to := range graph[from.Out()] {
 			indegrees[to]--
 			if indegrees[to] == 0 {
-				priorityqueue.Push(pq, providers[to])
+				utils.Push(pq, providers[to])
 			}
 		}
 	}
