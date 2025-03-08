@@ -73,7 +73,7 @@ func TestNewComponent(t *testing.T) {
 					return
 				}
 				if err.Error() != tc.wantErr.Error() {
-					tt.Fatalf("error mismatch: got %v, want %v", err, tc.wantErr)
+					tt.Errorf("error mismatch: got %v, want %v", err, tc.wantErr)
 				}
 				return
 			}

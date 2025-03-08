@@ -26,7 +26,7 @@ func NewConstructorProvider(f any, hasError bool) *Provider {
 	l := strings.Split(path.Base(funcPath), ".")
 	if len(l) > 2 {
 		return &Provider{
-			err: errors.New("anonymous functions are not allowed"),
+			err: errors.New("anonymous function is not allowed"),
 		}
 	}
 	constructorPkgPath := funcPath[:strings.LastIndex(funcPath, ".")]
