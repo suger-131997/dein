@@ -2,28 +2,28 @@
 package main
 
 import (
-	car1 "github.com/suger-131997/dein/example/car"
+	car_2 "github.com/suger-131997/dein/example/car"
 
-	engine1 "github.com/suger-131997/dein/example/car/engine"
+	engine_2 "github.com/suger-131997/dein/example/car/engine"
 
-	wheel1 "github.com/suger-131997/dein/example/car/wheel"
+	wheel_2 "github.com/suger-131997/dein/example/car/wheel"
 )
 
 type Container struct {
-	Car *car1.Car
+	Car *car_2.Car
 }
 
 func NewContainer(
-	engineType engine1.EngineType,
+	engineType engine_2.EngineType,
 ) (*Container, error) {
 	c := &Container{}
 
-	engine, err := engine1.NewEngine(engineType)
+	engine, err := engine_2.NewEngine(engineType)
 	if err != nil {
 		return nil, err
 	}
-	wheel := wheel1.NewWheel()
-	car := car1.NewCar(engine, wheel)
+	wheel := wheel_2.NewWheel()
+	car := car_2.NewCar(engine, wheel)
 	c.Car = car
 
 	return c, nil

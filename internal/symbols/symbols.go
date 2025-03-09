@@ -15,12 +15,16 @@ type Symbols struct {
 	sortedPkgPaths []string
 }
 
-func NewSymbols(c []component.Component, p []string) *Symbols {
-	components := utils.Uniq(c)
+func NewSymbols(_components []component.Component, _pkgPaths []string) *Symbols {
+	components := utils.Uniq(_components)
 	sort.Slice(components, func(i, j int) bool {
 		return components[i].Less(components[j])
 	})
-	pkgPaths := utils.Uniq(p)
+	pkgPaths := make([]string, 0)
+	for _, c := range components {
+		pkgPaths = append(pkgPaths, c.PkgPath())
+	}
+	pkgPaths = utils.Uniq(append(pkgPaths, _pkgPaths...))
 	sort.Strings(pkgPaths)
 
 	nameCounts := make(map[string]int)
@@ -29,7 +33,7 @@ func NewSymbols(c []component.Component, p []string) *Symbols {
 		name := utils.HeadToLower(c.Name())
 		varNames[c] = name
 		if count, ok := nameCounts[name]; ok {
-			varNames[c] = fmt.Sprintf("%s%d", name, count)
+			varNames[c] = fmt.Sprintf("%s_%d", name, count+1)
 			nameCounts[name] = count + 1
 			continue
 		}
@@ -41,7 +45,7 @@ func NewSymbols(c []component.Component, p []string) *Symbols {
 	for _, p := range pkgPaths {
 		pkgName := path.Base(p)
 		if count, ok := nameCounts[pkgName]; ok {
-			pkgNames[p] = fmt.Sprintf("%s%d", pkgName, count)
+			pkgNames[p] = fmt.Sprintf("%s_%d", pkgName, count+1)
 			nameCounts[pkgName] = count + 1
 			continue
 		}
