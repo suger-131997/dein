@@ -52,9 +52,6 @@ func (r *Resolver) Resolve() (*Generator, error) {
 			indegrees[p.Out()]++
 		}
 	}
-	sort.Slice(argumentComponents, func(i, j int) bool {
-		return argumentComponents[i].Less(argumentComponents[j])
-	})
 
 	resolvedProviders := make([]*provider.Provider, 0, len(graph))
 
@@ -107,10 +104,18 @@ func (r *Resolver) Resolve() (*Generator, error) {
 		containerGenerators = append(containerGenerators, generator.NewContainerGenerator(syms, c))
 	}
 
+	sort.Slice(argumentComponents, func(i, j int) bool {
+		return argumentComponents[i].Less(argumentComponents[j])
+	})
+	argumentGenerators := make([]generator.ArgumentGenerator, 0)
+	for _, c := range argumentComponents {
+		argumentGenerators = append(argumentGenerators, generator.NewComponentArgumentGenerator(syms, c))
+	}
+
 	return &Generator{
 		symbols:             syms,
 		containerGenerators: containerGenerators,
-		argumentComponents:  argumentComponents,
+		argumentGenerators:  argumentGenerators,
 		generators:          generators,
 	}, nil
 }

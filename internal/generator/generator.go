@@ -1,5 +1,9 @@
 package generator
 
+type ArgumentGenerator interface {
+	GenerateArgument() string
+}
+
 type BodyGenerator interface {
 	GenerateBody() string
 }

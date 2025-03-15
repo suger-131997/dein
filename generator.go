@@ -2,10 +2,8 @@ package dein
 
 import (
 	"bytes"
-	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/generator"
 	"github.com/suger-131997/dein/internal/symbols"
-	"strings"
 	"text/template"
 )
 
@@ -13,7 +11,7 @@ import (
 type Generator struct {
 	symbols             *symbols.Symbols
 	containerGenerators []*generator.ContainerGenerator
-	argumentComponents  []component.Component
+	argumentGenerators  []generator.ArgumentGenerator
 	generators          []generator.BodyGenerator
 }
 
@@ -37,17 +35,8 @@ func (g *Generator) Generate(pkgName string) ([]byte, error) {
 			}
 		},
 		Arguments: func(yield func(string) bool) {
-			for _, c := range g.argumentComponents {
-				var b strings.Builder
-				b.WriteString(g.symbols.VarName(c))
-				b.WriteString(" ")
-				if c.IsPointer() {
-					b.WriteString("*")
-				}
-				b.WriteString(g.symbols.PkgName(c.PkgPath()))
-				b.WriteString(".")
-				b.WriteString(c.Name())
-				if !yield(b.String()) {
+			for _, gen := range g.argumentGenerators {
+				if !yield(gen.GenerateArgument()) {
 					break
 				}
 			}
