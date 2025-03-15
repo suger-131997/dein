@@ -3,9 +3,7 @@ package main
 
 import (
 	car_2 "github.com/suger-131997/dein/example/car"
-
 	engine_2 "github.com/suger-131997/dein/example/car/engine"
-
 	wheel_2 "github.com/suger-131997/dein/example/car/wheel"
 )
 
