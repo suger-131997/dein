@@ -60,7 +60,7 @@ func NewConstructorProvider(f any, hasError bool) *Provider {
 		in:       in,
 		out:      out,
 		pkgPaths: utils.Uniq(pkgPaths),
-		buildGenerator: func(syms *symbols.Symbols, isInvoked bool) generator.Generator {
+		buildGenerator: func(syms *symbols.Symbols, isInvoked bool) generator.BodyGenerator {
 			return generator.NewConstructorGenerator(
 				syms,
 				in,

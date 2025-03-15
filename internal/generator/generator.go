@@ -1,9 +1,10 @@
 package generator
 
-type Generator interface {
-	GenerateBody() string
+type BodyGenerator interface {
+	Generate() string
 }
 
-const errorHandlingSegment = `if err != nil{
+const errorHandlingSegment = `
+if err != nil{
 	return nil, err
 }`

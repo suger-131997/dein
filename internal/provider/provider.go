@@ -12,7 +12,7 @@ type Provider struct {
 
 	pkgPaths []string
 
-	buildGenerator func(syms *symbols.Symbols, isInvoked bool) generator.Generator
+	buildGenerator func(syms *symbols.Symbols, isInvoked bool) generator.BodyGenerator
 
 	markInvoked bool
 
@@ -35,7 +35,7 @@ func (p *Provider) MarkInvoked() bool {
 	return p.markInvoked
 }
 
-func (p *Provider) Generator(syms *symbols.Symbols) generator.Generator {
+func (p *Provider) Generator(syms *symbols.Symbols) generator.BodyGenerator {
 	return p.buildGenerator(syms, p.markInvoked)
 }
 

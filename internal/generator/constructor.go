@@ -21,6 +21,8 @@ type ConstructorGenerator struct {
 	isInvoked bool
 }
 
+var _ BodyGenerator = &ConstructorGenerator{}
+
 func NewConstructorGenerator(
 	syms *symbols.Symbols,
 	in []component.Component,
@@ -41,7 +43,7 @@ func NewConstructorGenerator(
 	}
 }
 
-func (g *ConstructorGenerator) GenerateBody() string {
+func (g *ConstructorGenerator) Generate() string {
 	var b strings.Builder
 
 	b.WriteString(g.symbols.VarName(g.out))
@@ -65,13 +67,11 @@ func (g *ConstructorGenerator) GenerateBody() string {
 	b.WriteString(")")
 
 	if g.hasError {
-		b.WriteString("\n")
 		b.WriteString(errorHandlingSegment)
 	}
 
 	if g.isInvoked {
-		b.WriteString("\n")
-		b.WriteString("c.")
+		b.WriteString("\nc.")
 		b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.out)))
 		b.WriteString(" = ")
 		b.WriteString(g.symbols.VarName(g.out))

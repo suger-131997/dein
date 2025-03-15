@@ -15,7 +15,7 @@ type Generator struct {
 	symbols             *symbols.Symbols
 	containerComponents []component.Component
 	argumentComponents  []component.Component
-	generators          []generator.Generator
+	generators          []generator.BodyGenerator
 }
 
 // Generate generates a dependency injection source code.
@@ -64,7 +64,7 @@ func (g *Generator) Generate(pkgName string) ([]byte, error) {
 		},
 		Bodies: func(yield func(string) bool) {
 			for _, gen := range g.generators {
-				if !yield(gen.GenerateBody()) {
+				if !yield(gen.Generate()) {
 					break
 				}
 			}

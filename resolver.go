@@ -91,7 +91,7 @@ func (r *Resolver) Resolve() (*Generator, error) {
 	syms := symbols.NewSymbols(components, pkgPaths)
 
 	containerComponents := make([]component.Component, 0)
-	generators := make([]generator.Generator, 0, len(resolvedProviders))
+	generators := make([]generator.BodyGenerator, 0, len(resolvedProviders))
 	for _, p := range resolvedProviders {
 		if p.MarkInvoked() {
 			containerComponents = append(containerComponents, p.Out())
