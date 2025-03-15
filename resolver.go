@@ -102,10 +102,14 @@ func (r *Resolver) Resolve() (*Generator, error) {
 	sort.Slice(containerComponents, func(i, j int) bool {
 		return containerComponents[i].Less(containerComponents[j])
 	})
+	containerGenerators := make([]*generator.ContainerGenerator, 0)
+	for _, c := range containerComponents {
+		containerGenerators = append(containerGenerators, generator.NewContainerGenerator(syms, c))
+	}
 
 	return &Generator{
 		symbols:             syms,
-		containerComponents: containerComponents,
+		containerGenerators: containerGenerators,
 		argumentComponents:  argumentComponents,
 		generators:          generators,
 	}, nil

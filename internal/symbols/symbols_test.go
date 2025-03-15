@@ -8,6 +8,7 @@ import (
 	"github.com/suger-131997/dein/internal/testpackages/a"
 	a2 "github.com/suger-131997/dein/internal/testpackages/a/a"
 	"github.com/suger-131997/dein/internal/testpackages/b"
+	"github.com/suger-131997/dein/internal/testpackages/c"
 	"github.com/suger-131997/dein/internal/testutils"
 	"reflect"
 	"testing"
@@ -20,8 +21,9 @@ func TestNewSymbols(t *testing.T) {
 			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[b.B]{}))),
 			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a2.A1{}))),
 			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A4[int, c.C]{}))),
 		},
-		[]string{"github.com/suger-131997/dein/internal/testpackages/c"},
+		[]string{"github.com/suger-131997/dein/internal/testpackages/x"},
 	)
 
 	t.Run("get var name", func(tt *testing.T) {
@@ -32,6 +34,13 @@ func TestNewSymbols(t *testing.T) {
 	})
 
 	t.Run("get pkg name", func(tt *testing.T) {
+		want := "x"
+		if got := syms.PkgName("github.com/suger-131997/dein/internal/testpackages/x"); got != want {
+			tt.Errorf("PkgName() = %s, want %s", got, want)
+		}
+	})
+
+	t.Run("get type param pkg name", func(tt *testing.T) {
 		want := "c"
 		if got := syms.PkgName("github.com/suger-131997/dein/internal/testpackages/c"); got != want {
 			tt.Errorf("PkgName() = %s, want %s", got, want)
@@ -67,12 +76,13 @@ func TestNewSymbols(t *testing.T) {
 	})
 
 	t.Run("get ordered pkg name and pkg path", func(tt *testing.T) {
-		wantName := []string{"a", "a_2", "b_2", "c"}
+		wantName := []string{"a", "a_2", "b_2", "c", "x"}
 		wantPath := []string{
 			"github.com/suger-131997/dein/internal/testpackages/a",
 			"github.com/suger-131997/dein/internal/testpackages/a/a",
 			"github.com/suger-131997/dein/internal/testpackages/b",
 			"github.com/suger-131997/dein/internal/testpackages/c",
+			"github.com/suger-131997/dein/internal/testpackages/x",
 		}
 
 		gotName := make([]string, 0, len(wantName))

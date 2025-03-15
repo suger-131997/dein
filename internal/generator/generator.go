@@ -1,7 +1,7 @@
 package generator
 
 type BodyGenerator interface {
-	Generate() string
+	GenerateBody() string
 }
 
 const errorHandlingSegment = `

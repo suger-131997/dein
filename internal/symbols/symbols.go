@@ -22,7 +22,7 @@ func NewSymbols(_components []component.Component, _pkgPaths []string) *Symbols 
 	})
 	pkgPaths := make([]string, 0)
 	for _, c := range components {
-		pkgPaths = append(pkgPaths, c.PkgPath())
+		pkgPaths = append(pkgPaths, c.PkgPaths()...)
 	}
 	pkgPaths = utils.Uniq(append(pkgPaths, _pkgPaths...))
 	sort.Strings(pkgPaths)

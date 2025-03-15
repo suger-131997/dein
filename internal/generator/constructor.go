@@ -43,7 +43,7 @@ func NewConstructorGenerator(
 	}
 }
 
-func (g *ConstructorGenerator) Generate() string {
+func (g *ConstructorGenerator) GenerateBody() string {
 	var b strings.Builder
 
 	b.WriteString(g.symbols.VarName(g.out))

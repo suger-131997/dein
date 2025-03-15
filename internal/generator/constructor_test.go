@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestConstructorGeneratorGenerate(t *testing.T) {
+func TestConstructorGeneratorGenerateBody(t *testing.T) {
 	tests := []struct {
 		name string
 
@@ -117,9 +117,9 @@ c.A1 = a1`,
 				tc.isInvoked,
 			)
 
-			got := gen.Generate()
+			got := gen.GenerateBody()
 			if diff := cmp.Diff(got, tc.want); diff != "" {
-				tt.Errorf("Generate() mismatch (-want +got):\n%s", diff)
+				tt.Errorf("GenerateBody() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}

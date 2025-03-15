@@ -151,6 +151,15 @@ func TestComponentPkgPaths(t *testing.T) {
 				"github.com/suger-131997/dein/internal/testpackages/a/a",
 			},
 		},
+		{
+			name: "build-in type parameter",
+
+			component: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[int]{}))),
+
+			want: []string{
+				"github.com/suger-131997/dein/internal/testpackages/a",
+			},
+		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(tt *testing.T) {

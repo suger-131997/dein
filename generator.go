@@ -5,7 +5,6 @@ import (
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/generator"
 	"github.com/suger-131997/dein/internal/symbols"
-	"github.com/suger-131997/dein/internal/utils"
 	"strings"
 	"text/template"
 )
@@ -13,7 +12,7 @@ import (
 // Generator is a dependency injection source code generator.
 type Generator struct {
 	symbols             *symbols.Symbols
-	containerComponents []component.Component
+	containerGenerators []*generator.ContainerGenerator
 	argumentComponents  []component.Component
 	generators          []generator.BodyGenerator
 }
@@ -31,17 +30,8 @@ func (g *Generator) Generate(pkgName string) ([]byte, error) {
 		PkgName: pkgName,
 		Imports: g.symbols.Imports(),
 		ContainerFields: func(yield func(string) bool) {
-			for _, c := range g.containerComponents {
-				var b strings.Builder
-				b.WriteString(utils.HeadToUpper(g.symbols.VarName(c)))
-				b.WriteString(" ")
-				if c.IsPointer() {
-					b.WriteString("*")
-				}
-				b.WriteString(g.symbols.PkgName(c.PkgPath()))
-				b.WriteString(".")
-				b.WriteString(c.Name())
-				if !yield(b.String()) {
+			for _, gen := range g.containerGenerators {
+				if !yield(gen.Generate()) {
 					break
 				}
 			}
@@ -64,7 +54,7 @@ func (g *Generator) Generate(pkgName string) ([]byte, error) {
 		},
 		Bodies: func(yield func(string) bool) {
 			for _, gen := range g.generators {
-				if !yield(gen.Generate()) {
+				if !yield(gen.GenerateBody()) {
 					break
 				}
 			}

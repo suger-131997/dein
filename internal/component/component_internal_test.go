@@ -9,8 +9,9 @@ import (
 
 type testComponent struct {
 }
-
 type testGenericsComponent[T any] struct {
+}
+type testMultiGenericsComponent[T, U any] struct {
 }
 
 func TestNewComponent(t *testing.T) {
@@ -62,6 +63,16 @@ func TestNewComponent(t *testing.T) {
 			}()),
 			wantErr: errors.New("builtin type is not supported"),
 		},
+		{
+			name:    "anonymous struct is not supported",
+			in:      reflect.TypeOf(struct{ Name string }{}),
+			wantErr: errors.New("anonymous struct is not supported"),
+		},
+		{
+			name:    "anonymous struct for type param is not supported",
+			in:      reflect.TypeOf(testGenericsComponent[struct{ Name string }]{}),
+			wantErr: errors.New("anonymous struct for type param is not supported"),
+		},
 	}
 
 	for _, tc := range tests {
@@ -80,6 +91,56 @@ func TestNewComponent(t *testing.T) {
 
 			if diff := cmp.Diff(got, tc.want, cmp.AllowUnexported(Component{})); diff != "" {
 				tt.Errorf("Component is mismatch (-got +want):\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestComponentTypeParams(t *testing.T) {
+	tests := []struct {
+		name string
+
+		in reflect.Type
+
+		want []TypeParam
+	}{
+		{
+			name: "no type params",
+
+			in: reflect.TypeOf(testComponent{}),
+
+			want: []TypeParam{},
+		},
+		{
+			name: "one type params",
+
+			in: reflect.TypeOf(testGenericsComponent[testComponent]{}),
+
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component"}},
+		},
+		{
+			name: "two type params",
+
+			in: reflect.TypeOf(testMultiGenericsComponent[testComponent, int]{}),
+
+			want: []TypeParam{
+				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component"},
+				{name: "int", pkgPath: ""},
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(tt *testing.T) {
+			c, err := NewComponent(tc.in)
+			if err != nil {
+				tt.Fatalf("unexpected error: %v", err)
+				return
+			}
+			got := c.TypeParams()
+
+			if diff := cmp.Diff(got, tc.want, cmp.AllowUnexported(TypeParam{})); diff != "" {
+				tt.Errorf("TypeParams() is mismatch (-got +want):\n%s", diff)
 			}
 		})
 	}
