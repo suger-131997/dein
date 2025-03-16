@@ -128,6 +128,13 @@ func TestComponentTypeParams(t *testing.T) {
 				{name: "int", pkgPath: ""},
 			},
 		},
+		{
+			name: "nest type params",
+
+			in: reflect.TypeOf(testGenericsComponent[testGenericsComponent[testGenericsComponent[int]]]{}),
+
+			want: []TypeParam{{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[int]]", pkgPath: "github.com/suger-131997/dein/internal/component"}},
+		},
 	}
 
 	for _, tc := range tests {
@@ -138,6 +145,58 @@ func TestComponentTypeParams(t *testing.T) {
 				return
 			}
 			got := c.TypeParams()
+
+			if diff := cmp.Diff(got, tc.want, cmp.AllowUnexported(TypeParam{})); diff != "" {
+				tt.Errorf("TypeParams() is mismatch (-got +want):\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestTypeParamTypeParams(t *testing.T) {
+	tests := []struct {
+		name string
+
+		in TypeParam
+
+		want []TypeParam
+	}{
+		{
+			name: "no type params",
+
+			in: TypeParam{name: "testComponent"},
+
+			want: []TypeParam{},
+		},
+		{
+			name: "one type params",
+
+			in: TypeParam{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testComponent]"},
+
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component"}},
+		},
+		{
+			name: "two type params",
+
+			in: TypeParam{name: "testMultiGenericsComponent[github.com/suger-131997/dein/internal/component.testComponent,int]"},
+
+			want: []TypeParam{
+				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component"},
+				{name: "int", pkgPath: ""},
+			},
+		},
+		{
+			name: "nest type params",
+
+			in: TypeParam{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[int]]]"},
+
+			want: []TypeParam{{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[int]]", pkgPath: "github.com/suger-131997/dein/internal/component"}},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(tt *testing.T) {
+			got := tc.in.TypeParams()
 
 			if diff := cmp.Diff(got, tc.want, cmp.AllowUnexported(TypeParam{})); diff != "" {
 				tt.Errorf("TypeParams() is mismatch (-got +want):\n%s", diff)

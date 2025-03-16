@@ -1,5 +1,11 @@
 package generator
 
+import (
+	"github.com/suger-131997/dein/internal/component"
+	"github.com/suger-131997/dein/internal/symbols"
+	"strings"
+)
+
 type ArgumentGenerator interface {
 	GenerateArgument() string
 }
@@ -12,3 +18,23 @@ const errorHandlingSegment = `
 if err != nil{
 	return nil, err
 }`
+
+func writeTypeParams(b *strings.Builder, syms *symbols.Symbols, params []component.TypeParam) {
+	if len(params) == 0 {
+		return
+	}
+
+	b.WriteString("[")
+	for i, p := range params {
+		if path := p.PkgPath(); path != "" {
+			b.WriteString(syms.PkgName(path))
+			b.WriteString(".")
+		}
+		b.WriteString(p.Name())
+		writeTypeParams(b, syms, p.TypeParams())
+		if i != len(params)-1 {
+			b.WriteString(", ")
+		}
+	}
+	b.WriteString("]")
+}

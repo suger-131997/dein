@@ -91,9 +91,7 @@ func (c Component) PkgPaths() []string {
 	pkgPaths := make([]string, 0)
 
 	for _, tp := range c.TypeParams() {
-		if p := tp.PkgPath(); p != "" {
-			pkgPaths = append(pkgPaths, p)
-		}
+		pkgPaths = append(pkgPaths, tp.pkgPaths()...)
 	}
 
 	return utils.Uniq(append(pkgPaths, c.pkgPath))
@@ -111,7 +109,14 @@ func newTypeParams(typeStr string) TypeParam {
 			pkgPath: "",
 		}
 	}
-	i := strings.LastIndex(typeStr, ".")
+
+	var i int
+	if ii := strings.Index(typeStr, "["); ii >= 0 {
+		i = strings.LastIndex(typeStr[:ii], ".")
+	} else {
+		i = strings.LastIndex(typeStr, ".")
+	}
+
 	return TypeParam{
 		name:    typeStr[i+1:],
 		pkgPath: typeStr[:i],
@@ -119,9 +124,38 @@ func newTypeParams(typeStr string) TypeParam {
 }
 
 func (t TypeParam) Name() string {
+	if i := strings.Index(t.name, "["); i >= 0 {
+		return t.name[:i]
+	}
+
 	return t.name
 }
 
 func (t TypeParam) PkgPath() string {
 	return t.pkgPath
+}
+
+func (t TypeParam) TypeParams() []TypeParam {
+	typeParams := make([]TypeParam, 0)
+	if i := strings.Index(t.name, "["); i >= 0 {
+		params := strings.Split(t.name[i+1:len(t.name)-1], ",")
+		for _, p := range params {
+			typeParams = append(typeParams, newTypeParams(p))
+		}
+	}
+	return typeParams
+}
+
+func (t TypeParam) pkgPaths() []string {
+	pkgPaths := make([]string, 0)
+
+	if t.pkgPath != "" {
+		pkgPaths = append(pkgPaths, t.pkgPath)
+	}
+
+	for _, tp := range t.TypeParams() {
+		pkgPaths = append(pkgPaths, tp.pkgPaths()...)
+	}
+
+	return utils.Uniq(pkgPaths)
 }

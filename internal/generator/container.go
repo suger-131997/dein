@@ -31,21 +31,7 @@ func (g *ContainerGenerator) Generate() string {
 	b.WriteString(g.symbols.PkgName(g.c.PkgPath()))
 	b.WriteString(".")
 	b.WriteString(g.c.Name())
-
-	if params := g.c.TypeParams(); len(params) != 0 {
-		b.WriteString("[")
-		for i, p := range params {
-			if path := p.PkgPath(); path != "" {
-				b.WriteString(g.symbols.PkgName(path))
-				b.WriteString(".")
-			}
-			b.WriteString(p.Name())
-			if i != len(params)-1 {
-				b.WriteString(", ")
-			}
-		}
-		b.WriteString("]")
-	}
+	writeTypeParams(&b, g.symbols, g.c.TypeParams())
 
 	return b.String()
 }

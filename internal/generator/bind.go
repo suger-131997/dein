@@ -38,20 +38,7 @@ func (g BindGenerator) GenerateBody() string {
 	b.WriteString(g.symbols.PkgName(g.bindTo.PkgPath()))
 	b.WriteString(".")
 	b.WriteString(g.bindTo.Name())
-	if params := g.bindTo.TypeParams(); len(params) != 0 {
-		b.WriteString("[")
-		for i, p := range params {
-			if path := p.PkgPath(); path != "" {
-				b.WriteString(g.symbols.PkgName(path))
-				b.WriteString(".")
-			}
-			b.WriteString(p.Name())
-			if i != len(params)-1 {
-				b.WriteString(", ")
-			}
-		}
-		b.WriteString("]")
-	}
+	writeTypeParams(&b, g.symbols, g.bindTo.TypeParams())
 
 	b.WriteString(" = ")
 

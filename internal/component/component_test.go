@@ -7,6 +7,7 @@ import (
 	"github.com/suger-131997/dein/internal/testpackages/a"
 	a2 "github.com/suger-131997/dein/internal/testpackages/a/a"
 	"github.com/suger-131997/dein/internal/testpackages/b"
+	"github.com/suger-131997/dein/internal/testpackages/c"
 	"github.com/suger-131997/dein/internal/testutils"
 	"reflect"
 	"testing"
@@ -158,6 +159,17 @@ func TestComponentPkgPaths(t *testing.T) {
 
 			want: []string{
 				"github.com/suger-131997/dein/internal/testpackages/a",
+			},
+		},
+		{
+			name: "nest type parameter",
+
+			component: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[a.A4[b.B, c.C]]{}))),
+
+			want: []string{
+				"github.com/suger-131997/dein/internal/testpackages/a",
+				"github.com/suger-131997/dein/internal/testpackages/b",
+				"github.com/suger-131997/dein/internal/testpackages/c",
 			},
 		},
 	}
