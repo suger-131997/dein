@@ -5,6 +5,10 @@ import (
 	"github.com/suger-131997/dein/example/car/wheel"
 )
 
+type ICar interface {
+	Run()
+}
+
 type Car struct {
 	engine *engine.Engine
 	wheel  wheel.Wheel

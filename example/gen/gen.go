@@ -19,9 +19,10 @@ func main() {
 	flag.Parse()
 	r := dein.NewResolver()
 
+	dein.Register(r, dein.Mark(dein.Bind[car.ICar, *car.Car]()))
 	dein.Register(r, dein.PE1(engine.NewEngine))
 	dein.Register(r, dein.P0(wheel.NewWheel))
-	dein.Register(r, dein.Mark(dein.P2(car.NewCar)))
+	dein.Register(r, dein.P2(car.NewCar))
 
 	gen, err := r.Resolve()
 	if err != nil {

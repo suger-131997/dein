@@ -1,0 +1,104 @@
+package generator_test
+
+import (
+	"github.com/google/go-cmp/cmp"
+	"github.com/suger-131997/dein/internal/component"
+	"github.com/suger-131997/dein/internal/generator"
+	"github.com/suger-131997/dein/internal/symbols"
+	"github.com/suger-131997/dein/internal/testpackages/a"
+	"github.com/suger-131997/dein/internal/testpackages/b"
+	"github.com/suger-131997/dein/internal/testpackages/c"
+	"github.com/suger-131997/dein/internal/testutils"
+	"reflect"
+	"testing"
+)
+
+func TestBindGeneratorGenerateBody(t *testing.T) {
+	tests := []struct {
+		name string
+
+		bindTo    component.Component
+		implement component.Component
+		isInvoked bool
+
+		want string
+	}{
+		{
+			name: "b.B bind to a.IA1",
+
+			bindTo: func() component.Component {
+				var ia *a.IA1
+				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
+			}(),
+			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			isInvoked: false,
+
+			want: "var iA1 a.IA1 = b",
+		},
+		{
+			name: "*b.B bind to a.IA1",
+
+			bindTo: func() component.Component {
+				var ia *a.IA1
+				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
+			}(),
+			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&b.B{}))),
+			isInvoked: false,
+
+			want: "var iA1 a.IA1 = b",
+		},
+		{
+			name: "is invoked",
+
+			bindTo: func() component.Component {
+				var ia *a.IA1
+				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
+			}(),
+			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			isInvoked: true,
+
+			want: `var iA1 a.IA1 = b
+c.IA1 = iA1`,
+		},
+		{
+			name: "generics component with one type parameter",
+
+			bindTo: func() component.Component {
+				var ia *a.IA2[c.C]
+				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
+			}(),
+			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			isInvoked: false,
+
+			want: "var iA2 a.IA2[c.C] = b",
+		},
+		{
+			name: "generics component with build-in type parameter",
+
+			bindTo: func() component.Component {
+				var ia *a.IA2[int]
+				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
+			}(),
+			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			isInvoked: false,
+
+			want: "var iA2 a.IA2[int] = b",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(tt *testing.T) {
+			gen := generator.NewBindGenerator(
+				symbols.NewSymbols([]component.Component{tc.bindTo, tc.implement}, []string{}),
+				tc.bindTo,
+				tc.implement,
+				tc.isInvoked,
+			)
+
+			got := gen.GenerateBody()
+			if diff := cmp.Diff(got, tc.want); diff != "" {
+				tt.Errorf("GenerateBody() mismatch (-got +want):\n%s", diff)
+			}
+		})
+	}
+}

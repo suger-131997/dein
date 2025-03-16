@@ -119,7 +119,7 @@ c.A1 = a1`,
 
 			got := gen.GenerateBody()
 			if diff := cmp.Diff(got, tc.want); diff != "" {
-				tt.Errorf("GenerateBody() mismatch (-want +got):\n%s", diff)
+				tt.Errorf("GenerateBody() mismatch (-got +want):\n%s", diff)
 			}
 		})
 	}

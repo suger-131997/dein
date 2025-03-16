@@ -7,3 +7,7 @@ type B struct{}
 func NewB(a a.A1) *B {
 	return &B{}
 }
+
+func (b B) A1() {}
+
+var _ a.IA1 = B{}

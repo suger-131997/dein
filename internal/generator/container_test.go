@@ -67,7 +67,7 @@ func TestContainerGeneratorGenerate(t *testing.T) {
 
 			got := gen.Generate()
 			if diff := cmp.Diff(got, tc.want); diff != "" {
-				tt.Errorf("Generate() mismatch (-want +got):\n%s", diff)
+				tt.Errorf("Generate() mismatch (-got +want):\n%s", diff)
 			}
 		})
 	}

@@ -67,7 +67,7 @@ func TestComponentArgumentGeneratorGenerate(t *testing.T) {
 
 			got := gen.GenerateArgument()
 			if diff := cmp.Diff(got, tc.want); diff != "" {
-				tt.Errorf("GenerateArgument() mismatch (-want +got):\n%s", diff)
+				tt.Errorf("GenerateArgument() mismatch (-got +want):\n%s", diff)
 			}
 		})
 	}
