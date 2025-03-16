@@ -4,6 +4,7 @@ package main
 import (
 	car_2 "github.com/suger-131997/dein/example/car"
 	engine_2 "github.com/suger-131997/dein/example/car/engine"
+	light_2 "github.com/suger-131997/dein/example/car/light"
 	wheel_2 "github.com/suger-131997/dein/example/car/wheel"
 )
 
@@ -13,6 +14,7 @@ type Container struct {
 
 func NewContainer(
 	engineType engine_2.EngineType,
+	lightFunc func() light_2.Light,
 ) (*Container, error) {
 	c := &Container{}
 
@@ -20,8 +22,9 @@ func NewContainer(
 	if err != nil {
 		return nil, err
 	}
+	light := lightFunc()
 	wheel := wheel_2.NewWheel()
-	car := car_2.NewCar(engine, wheel)
+	car := car_2.NewCar(engine, wheel, light)
 	var iCar car_2.ICar = car
 	c.ICar = iCar
 

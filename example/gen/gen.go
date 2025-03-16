@@ -7,6 +7,7 @@ import (
 	"github.com/suger-131997/dein"
 	"github.com/suger-131997/dein/example/car"
 	"github.com/suger-131997/dein/example/car/engine"
+	"github.com/suger-131997/dein/example/car/light"
 	"github.com/suger-131997/dein/example/car/wheel"
 	"golang.org/x/tools/imports"
 	"log"
@@ -22,7 +23,8 @@ func main() {
 	dein.Register(r, dein.Mark(dein.Bind[car.ICar, *car.Car]()))
 	dein.Register(r, dein.PE1(engine.NewEngine))
 	dein.Register(r, dein.P0(wheel.NewWheel))
-	dein.Register(r, dein.P2(car.NewCar))
+	dein.Register(r, dein.P3(car.NewCar))
+	dein.Register(r, dein.PF0[light.Light]())
 
 	gen, err := r.Resolve()
 	if err != nil {

@@ -111,6 +111,11 @@ func (r *Resolver) Resolve() (*Generator, error) {
 	for _, c := range argumentComponents {
 		argumentGenerators = append(argumentGenerators, generator.NewComponentArgumentGenerator(syms, c))
 	}
+	for _, g := range generators {
+		if ag, ok := g.(generator.ArgumentGenerator); ok {
+			argumentGenerators = append(argumentGenerators, ag)
+		}
+	}
 
 	return &Generator{
 		symbols:             syms,

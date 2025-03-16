@@ -5,52 +5,202 @@ import (
 	"github.com/suger-131997/dein/internal/provider"
 )
 
-// P0 creates a new constructor provider with a function that takes no arguments and returns a value of type R.
+// P0 creates a new provider that initializes with a constructor that takes no  arguments and returns a value of type R.
 func P0[R any](f func() R) *provider.Provider {
 	return provider.NewConstructorProvider(f, false)
 }
 
-// P0 creates a new constructor provider with a function that takes no arguments and returns a value of type R or an error.
+// PE0 creates a new provider that initializes with a constructor that takes no  arguments and returns a value of type R or an error.
 func PE0[R any](f func() (R, error)) *provider.Provider {
 	return provider.NewConstructorProvider(f, true)
 }
 
-// P1 creates a new constructor provider with a function that takes 1 arguments and returns a value of type R.
+// PF0 creates a new provider that initializes with a function provided at build time, which takes no arguments and returns a value of type R.
+func PF0[R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false)
+}
+
+// PFE0 creates a new provider that initializes with a function provided at build time, which takes no arguments and returns a value of type R or an error.
+func PFE0[R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true)
+}
+
+// P1 creates a new provider that initializes with a constructor that takes 1  arguments and returns a value of type R.
 func P1[T0, R any](f func(T0) R) *provider.Provider {
 	return provider.NewConstructorProvider(f, false)
 }
 
-// P1 creates a new constructor provider with a function that takes 1 arguments and returns a value of type R or an error.
+// PE1 creates a new provider that initializes with a constructor that takes 1  arguments and returns a value of type R or an error.
 func PE1[T0, R any](f func(T0) (R, error)) *provider.Provider {
 	return provider.NewConstructorProvider(f, true)
 }
 
-// P2 creates a new constructor provider with a function that takes 2 arguments and returns a value of type R.
+// PF1 creates a new provider that initializes with a function provided at build time, which takes 1 arguments and returns a value of type R.
+func PF1[T0, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0]())
+}
+
+// PFE1 creates a new provider that initializes with a function provided at build time, which takes 1 arguments and returns a value of type R or an error.
+func PFE1[T0, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0]())
+}
+
+// P2 creates a new provider that initializes with a constructor that takes 2  arguments and returns a value of type R.
 func P2[T0, T1, R any](f func(T0, T1) R) *provider.Provider {
 	return provider.NewConstructorProvider(f, false)
 }
 
-// P2 creates a new constructor provider with a function that takes 2 arguments and returns a value of type R or an error.
+// PE2 creates a new provider that initializes with a constructor that takes 2  arguments and returns a value of type R or an error.
 func PE2[T0, T1, R any](f func(T0, T1) (R, error)) *provider.Provider {
 	return provider.NewConstructorProvider(f, true)
 }
 
-// P3 creates a new constructor provider with a function that takes 3 arguments and returns a value of type R.
+// PF2 creates a new provider that initializes with a function provided at build time, which takes 2 arguments and returns a value of type R.
+func PF2[T0, T1, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0](), rt[T1]())
+}
+
+// PFE2 creates a new provider that initializes with a function provided at build time, which takes 2 arguments and returns a value of type R or an error.
+func PFE2[T0, T1, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0](), rt[T1]())
+}
+
+// P3 creates a new provider that initializes with a constructor that takes 3  arguments and returns a value of type R.
 func P3[T0, T1, T2, R any](f func(T0, T1, T2) R) *provider.Provider {
 	return provider.NewConstructorProvider(f, false)
 }
 
-// P3 creates a new constructor provider with a function that takes 3 arguments and returns a value of type R or an error.
+// PE3 creates a new provider that initializes with a constructor that takes 3  arguments and returns a value of type R or an error.
 func PE3[T0, T1, T2, R any](f func(T0, T1, T2) (R, error)) *provider.Provider {
 	return provider.NewConstructorProvider(f, true)
 }
 
-// P4 creates a new constructor provider with a function that takes 4 arguments and returns a value of type R.
+// PF3 creates a new provider that initializes with a function provided at build time, which takes 3 arguments and returns a value of type R.
+func PF3[T0, T1, T2, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0](), rt[T1](), rt[T2]())
+}
+
+// PFE3 creates a new provider that initializes with a function provided at build time, which takes 3 arguments and returns a value of type R or an error.
+func PFE3[T0, T1, T2, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0](), rt[T1](), rt[T2]())
+}
+
+// P4 creates a new provider that initializes with a constructor that takes 4  arguments and returns a value of type R.
 func P4[T0, T1, T2, T3, R any](f func(T0, T1, T2, T3) R) *provider.Provider {
 	return provider.NewConstructorProvider(f, false)
 }
 
-// P4 creates a new constructor provider with a function that takes 4 arguments and returns a value of type R or an error.
+// PE4 creates a new provider that initializes with a constructor that takes 4  arguments and returns a value of type R or an error.
 func PE4[T0, T1, T2, T3, R any](f func(T0, T1, T2, T3) (R, error)) *provider.Provider {
 	return provider.NewConstructorProvider(f, true)
+}
+
+// PF4 creates a new provider that initializes with a function provided at build time, which takes 4 arguments and returns a value of type R.
+func PF4[T0, T1, T2, T3, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0](), rt[T1](), rt[T2](), rt[T3]())
+}
+
+// PFE4 creates a new provider that initializes with a function provided at build time, which takes 4 arguments and returns a value of type R or an error.
+func PFE4[T0, T1, T2, T3, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0](), rt[T1](), rt[T2](), rt[T3]())
+}
+
+// P5 creates a new provider that initializes with a constructor that takes 5  arguments and returns a value of type R.
+func P5[T0, T1, T2, T3, T4, R any](f func(T0, T1, T2, T3, T4) R) *provider.Provider {
+	return provider.NewConstructorProvider(f, false)
+}
+
+// PE5 creates a new provider that initializes with a constructor that takes 5  arguments and returns a value of type R or an error.
+func PE5[T0, T1, T2, T3, T4, R any](f func(T0, T1, T2, T3, T4) (R, error)) *provider.Provider {
+	return provider.NewConstructorProvider(f, true)
+}
+
+// PF5 creates a new provider that initializes with a function provided at build time, which takes 5 arguments and returns a value of type R.
+func PF5[T0, T1, T2, T3, T4, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4]())
+}
+
+// PFE5 creates a new provider that initializes with a function provided at build time, which takes 5 arguments and returns a value of type R or an error.
+func PFE5[T0, T1, T2, T3, T4, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4]())
+}
+
+// P6 creates a new provider that initializes with a constructor that takes 6  arguments and returns a value of type R.
+func P6[T0, T1, T2, T3, T4, T5, R any](f func(T0, T1, T2, T3, T4, T5) R) *provider.Provider {
+	return provider.NewConstructorProvider(f, false)
+}
+
+// PE6 creates a new provider that initializes with a constructor that takes 6  arguments and returns a value of type R or an error.
+func PE6[T0, T1, T2, T3, T4, T5, R any](f func(T0, T1, T2, T3, T4, T5) (R, error)) *provider.Provider {
+	return provider.NewConstructorProvider(f, true)
+}
+
+// PF6 creates a new provider that initializes with a function provided at build time, which takes 6 arguments and returns a value of type R.
+func PF6[T0, T1, T2, T3, T4, T5, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4](), rt[T5]())
+}
+
+// PFE6 creates a new provider that initializes with a function provided at build time, which takes 6 arguments and returns a value of type R or an error.
+func PFE6[T0, T1, T2, T3, T4, T5, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4](), rt[T5]())
+}
+
+// P7 creates a new provider that initializes with a constructor that takes 7  arguments and returns a value of type R.
+func P7[T0, T1, T2, T3, T4, T5, T6, R any](f func(T0, T1, T2, T3, T4, T5, T6) R) *provider.Provider {
+	return provider.NewConstructorProvider(f, false)
+}
+
+// PE7 creates a new provider that initializes with a constructor that takes 7  arguments and returns a value of type R or an error.
+func PE7[T0, T1, T2, T3, T4, T5, T6, R any](f func(T0, T1, T2, T3, T4, T5, T6) (R, error)) *provider.Provider {
+	return provider.NewConstructorProvider(f, true)
+}
+
+// PF7 creates a new provider that initializes with a function provided at build time, which takes 7 arguments and returns a value of type R.
+func PF7[T0, T1, T2, T3, T4, T5, T6, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4](), rt[T5](), rt[T6]())
+}
+
+// PFE7 creates a new provider that initializes with a function provided at build time, which takes 7 arguments and returns a value of type R or an error.
+func PFE7[T0, T1, T2, T3, T4, T5, T6, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4](), rt[T5](), rt[T6]())
+}
+
+// P8 creates a new provider that initializes with a constructor that takes 8  arguments and returns a value of type R.
+func P8[T0, T1, T2, T3, T4, T5, T6, T7, R any](f func(T0, T1, T2, T3, T4, T5, T6, T7) R) *provider.Provider {
+	return provider.NewConstructorProvider(f, false)
+}
+
+// PE8 creates a new provider that initializes with a constructor that takes 8  arguments and returns a value of type R or an error.
+func PE8[T0, T1, T2, T3, T4, T5, T6, T7, R any](f func(T0, T1, T2, T3, T4, T5, T6, T7) (R, error)) *provider.Provider {
+	return provider.NewConstructorProvider(f, true)
+}
+
+// PF8 creates a new provider that initializes with a function provided at build time, which takes 8 arguments and returns a value of type R.
+func PF8[T0, T1, T2, T3, T4, T5, T6, T7, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4](), rt[T5](), rt[T6](), rt[T7]())
+}
+
+// PFE8 creates a new provider that initializes with a function provided at build time, which takes 8 arguments and returns a value of type R or an error.
+func PFE8[T0, T1, T2, T3, T4, T5, T6, T7, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4](), rt[T5](), rt[T6](), rt[T7]())
+}
+
+// P9 creates a new provider that initializes with a constructor that takes 9  arguments and returns a value of type R.
+func P9[T0, T1, T2, T3, T4, T5, T6, T7, T8, R any](f func(T0, T1, T2, T3, T4, T5, T6, T7, T8) R) *provider.Provider {
+	return provider.NewConstructorProvider(f, false)
+}
+
+// PE9 creates a new provider that initializes with a constructor that takes 9  arguments and returns a value of type R or an error.
+func PE9[T0, T1, T2, T3, T4, T5, T6, T7, T8, R any](f func(T0, T1, T2, T3, T4, T5, T6, T7, T8) (R, error)) *provider.Provider {
+	return provider.NewConstructorProvider(f, true)
+}
+
+// PF9 creates a new provider that initializes with a function provided at build time, which takes 9 arguments and returns a value of type R.
+func PF9[T0, T1, T2, T3, T4, T5, T6, T7, T8, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), false, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4](), rt[T5](), rt[T6](), rt[T7](), rt[T8]())
+}
+
+// PFE9 creates a new provider that initializes with a function provided at build time, which takes 9 arguments and returns a value of type R or an error.
+func PFE9[T0, T1, T2, T3, T4, T5, T6, T7, T8, R any]() *provider.Provider {
+	return provider.NewFunctionProvider(rt[R](), true, rt[T0](), rt[T1](), rt[T2](), rt[T3](), rt[T4](), rt[T5](), rt[T6](), rt[T7](), rt[T8]())
 }
