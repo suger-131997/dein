@@ -7,6 +7,7 @@ import (
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/testpackages/a"
 	"github.com/suger-131997/dein/internal/testpackages/b"
+	"github.com/suger-131997/dein/internal/testpackages/c"
 	"github.com/suger-131997/dein/internal/testutils"
 	"reflect"
 	"testing"
@@ -49,6 +50,26 @@ func TestNewConstructorProvider(t *testing.T) {
 				pkgPaths: []string{
 					"github.com/suger-131997/dein/internal/testpackages/a",
 					"github.com/suger-131997/dein/internal/testpackages/b",
+				},
+				markInvoked: false,
+				err:         nil,
+			},
+		},
+		{
+			name: "interface args function",
+
+			f:        c.NewC,
+			hasError: false,
+
+			want: &Provider{
+				in: []component.Component{testutils.Must[component.Component](t)(component.NewComponent(func() reflect.Type {
+					var i a.IA1
+					return reflect.TypeOf(&i).Elem()
+				}()))},
+				out: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(c.C{}))),
+				pkgPaths: []string{
+					"github.com/suger-131997/dein/internal/testpackages/a",
+					"github.com/suger-131997/dein/internal/testpackages/c",
 				},
 				markInvoked: false,
 				err:         nil,
