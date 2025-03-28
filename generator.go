@@ -26,7 +26,14 @@ func (g *Generator) Generate(pkgName string) ([]byte, error) {
 		Bodies          func(yield func(string) bool)
 	}{
 		PkgName: pkgName,
-		Imports: g.symbols.Imports(),
+		//Imports: g.symbols.Imports(),
+		Imports: func(yield func(string, string) bool) {
+			for _, im := range g.symbols.Imports() {
+				if !yield(im[0], im[1]) {
+					break
+				}
+			}
+		},
 		ContainerFields: func(yield func(string) bool) {
 			for _, gen := range g.containerGenerators {
 				if !yield(gen.Generate()) {

@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/utils"
-	"iter"
 	"path"
 	"sort"
 )
 
 type Symbols struct {
-	varNames       map[component.Component]string
-	pkgNames       map[string]string
-	sortedPkgPaths []string
+	varNames        map[component.Component]string
+	pkgNames        map[string]string
+	orderedPkgPaths []string
 }
 
 func NewSymbols(_components []component.Component, _pkgPaths []string) *Symbols {
@@ -54,9 +53,9 @@ func NewSymbols(_components []component.Component, _pkgPaths []string) *Symbols 
 	}
 
 	return &Symbols{
-		varNames:       varNames,
-		pkgNames:       pkgNames,
-		sortedPkgPaths: pkgPaths,
+		varNames:        varNames,
+		pkgNames:        pkgNames,
+		orderedPkgPaths: pkgPaths,
 	}
 }
 
@@ -68,12 +67,10 @@ func (s *Symbols) PkgName(pkgPath string) string {
 	return s.pkgNames[pkgPath]
 }
 
-func (s *Symbols) Imports() iter.Seq2[string, string] {
-	return func(yield func(string, string) bool) {
-		for _, p := range s.sortedPkgPaths {
-			if !yield(s.pkgNames[p], p) {
-				return
-			}
-		}
+func (s *Symbols) Imports() [][]string {
+	imports := make([][]string, 0, len(s.orderedPkgPaths))
+	for _, p := range s.orderedPkgPaths {
+		imports = append(imports, []string{s.pkgNames[p], p})
 	}
+	return imports
 }

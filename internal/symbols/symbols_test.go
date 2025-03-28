@@ -76,27 +76,18 @@ func TestNewSymbols(t *testing.T) {
 	})
 
 	t.Run("get ordered pkg name and pkg path", func(tt *testing.T) {
-		wantName := []string{"a", "a_2", "b_2", "c", "x"}
-		wantPath := []string{
-			"github.com/suger-131997/dein/internal/testpackages/a",
-			"github.com/suger-131997/dein/internal/testpackages/a/a",
-			"github.com/suger-131997/dein/internal/testpackages/b",
-			"github.com/suger-131997/dein/internal/testpackages/c",
-			"github.com/suger-131997/dein/internal/testpackages/x",
+		want := [][]string{
+			{"a", "github.com/suger-131997/dein/internal/testpackages/a"},
+			{"a_2", "github.com/suger-131997/dein/internal/testpackages/a/a"},
+			{"b_2", "github.com/suger-131997/dein/internal/testpackages/b"},
+			{"c", "github.com/suger-131997/dein/internal/testpackages/c"},
+			{"x", "github.com/suger-131997/dein/internal/testpackages/x"},
 		}
 
-		gotName := make([]string, 0, len(wantName))
-		gotPath := make([]string, 0, len(wantPath))
-		for name, path := range syms.Imports() {
-			gotName = append(gotName, name)
-			gotPath = append(gotPath, path)
-		}
+		got := syms.Imports()
 
-		if diff := cmp.Diff(gotName, wantName); diff != "" {
-			tt.Errorf("Imports().name is mismatch (-got +want):\n%s", diff)
-		}
-		if diff := cmp.Diff(gotPath, wantPath); diff != "" {
-			tt.Errorf("Imports().path is mismatch (-got +want):\n%s", diff)
+		if diff := cmp.Diff(got, want); diff != "" {
+			tt.Errorf("Imports() is mismatch (-got +want):\n%s", diff)
 		}
 	})
 }
