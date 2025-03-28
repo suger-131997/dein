@@ -39,8 +39,8 @@ func NewBindProvider(i, t reflect.Type) *Provider {
 		in:       []component.Component{in},
 		out:      out,
 		pkgPaths: utils.Uniq(append(in.PkgPaths(), out.PkgPaths()...)),
-		buildGenerator: func(syms *symbols.Symbols, isInvoked bool) generator.BodyGenerator {
-			return generator.NewBindGenerator(syms, out, in, isInvoked)
+		buildGenerator: func(syms *symbols.Symbols, markExposed bool) generator.BodyGenerator {
+			return generator.NewBindGenerator(syms, out, in, markExposed)
 		},
 	}
 }

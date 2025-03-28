@@ -35,8 +35,8 @@ func NewFunctionProvider(r reflect.Type, hasError bool, tl ...reflect.Type) *Pro
 		in:       in,
 		out:      out,
 		pkgPaths: utils.Uniq(pkgPaths),
-		buildGenerator: func(syms *symbols.Symbols, isInvoked bool) generator.BodyGenerator {
-			return generator.NewFunctionGenerator(syms, in, out, hasError, isInvoked)
+		buildGenerator: func(syms *symbols.Symbols, markExposed bool) generator.BodyGenerator {
+			return generator.NewFunctionGenerator(syms, in, out, hasError, markExposed)
 		},
 	}
 }

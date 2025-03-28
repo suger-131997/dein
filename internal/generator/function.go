@@ -15,7 +15,7 @@ type FunctionGenerator struct {
 
 	hasError bool
 
-	isInvoked bool
+	markExposed bool
 }
 
 var _ ArgumentGenerator = &FunctionGenerator{}
@@ -26,14 +26,14 @@ func NewFunctionGenerator(
 	in []component.Component,
 	out component.Component,
 	hasError bool,
-	isInvoked bool,
+	markExposed bool,
 ) *FunctionGenerator {
 	return &FunctionGenerator{
-		symbols:   syms,
-		in:        in,
-		out:       out,
-		hasError:  hasError,
-		isInvoked: isInvoked,
+		symbols:     syms,
+		in:          in,
+		out:         out,
+		hasError:    hasError,
+		markExposed: markExposed,
 	}
 }
 
@@ -99,7 +99,7 @@ func (g *FunctionGenerator) GenerateBody() string {
 		b.WriteString(errorHandlingSegment)
 	}
 
-	if g.isInvoked {
+	if g.markExposed {
 		b.WriteString("\nc.")
 		b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.out)))
 		b.WriteString(" = ")

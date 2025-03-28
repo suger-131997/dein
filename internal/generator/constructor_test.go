@@ -20,7 +20,7 @@ func TestConstructorGeneratorGenerateBody(t *testing.T) {
 		constructorName    string
 		constructorPkgPath string
 		hasError           bool
-		isInvoked          bool
+		markExposed        bool
 
 		want string
 	}{
@@ -32,7 +32,7 @@ func TestConstructorGeneratorGenerateBody(t *testing.T) {
 			constructorName:    "NewA1",
 			constructorPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
 			hasError:           false,
-			isInvoked:          false,
+			markExposed:        false,
 			want:               "a1 := a.NewA1()",
 		},
 		{
@@ -45,7 +45,7 @@ func TestConstructorGeneratorGenerateBody(t *testing.T) {
 			constructorName:    "NewA1",
 			constructorPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
 			hasError:           false,
-			isInvoked:          false,
+			markExposed:        false,
 			want:               "a1 := a.NewA1(a2)",
 		},
 		{
@@ -59,7 +59,7 @@ func TestConstructorGeneratorGenerateBody(t *testing.T) {
 			constructorName:    "NewA1",
 			constructorPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
 			hasError:           false,
-			isInvoked:          false,
+			markExposed:        false,
 			want:               "a1 := a.NewA1(a2, a3)",
 		},
 		{
@@ -70,33 +70,33 @@ func TestConstructorGeneratorGenerateBody(t *testing.T) {
 			constructorName:    "NewA1",
 			constructorPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
 			hasError:           true,
-			isInvoked:          false,
+			markExposed:        false,
 			want: `a1, err := a.NewA1()
 if err != nil{
 	return nil, err
 }`,
 		},
 		{
-			name: "is invoked",
+			name: "mark exposed",
 
 			in:                 []component.Component{},
 			out:                testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			constructorName:    "NewA1",
 			constructorPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
 			hasError:           false,
-			isInvoked:          true,
+			markExposed:        true,
 			want: `a1 := a.NewA1()
 c.A1 = a1`,
 		},
 		{
-			name: "has error and is invoked",
+			name: "has error and mark exposed",
 
 			in:                 []component.Component{},
 			out:                testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			constructorName:    "NewA1",
 			constructorPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
 			hasError:           true,
-			isInvoked:          true,
+			markExposed:        true,
 			want: `a1, err := a.NewA1()
 if err != nil{
 	return nil, err
@@ -114,7 +114,7 @@ c.A1 = a1`,
 				tc.constructorName,
 				tc.constructorPkgPath,
 				tc.hasError,
-				tc.isInvoked,
+				tc.markExposed,
 			)
 
 			got := gen.GenerateBody()

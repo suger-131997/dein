@@ -17,9 +17,9 @@ func TestBindGeneratorGenerateBody(t *testing.T) {
 	tests := []struct {
 		name string
 
-		bindTo    component.Component
-		implement component.Component
-		isInvoked bool
+		bindTo      component.Component
+		implement   component.Component
+		markExposed bool
 
 		want string
 	}{
@@ -30,8 +30,8 @@ func TestBindGeneratorGenerateBody(t *testing.T) {
 				var ia *a.IA1
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
 			}(),
-			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
-			isInvoked: false,
+			implement:   testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			markExposed: false,
 
 			want: "var iA1 a.IA1 = b",
 		},
@@ -42,20 +42,20 @@ func TestBindGeneratorGenerateBody(t *testing.T) {
 				var ia *a.IA1
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
 			}(),
-			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&b.B{}))),
-			isInvoked: false,
+			implement:   testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&b.B{}))),
+			markExposed: false,
 
 			want: "var iA1 a.IA1 = b",
 		},
 		{
-			name: "is invoked",
+			name: "mark exposed",
 
 			bindTo: func() component.Component {
 				var ia *a.IA1
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
 			}(),
-			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
-			isInvoked: true,
+			implement:   testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			markExposed: true,
 
 			want: `var iA1 a.IA1 = b
 c.IA1 = iA1`,
@@ -67,8 +67,8 @@ c.IA1 = iA1`,
 				var ia *a.IA2[c.C]
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
 			}(),
-			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
-			isInvoked: false,
+			implement:   testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			markExposed: false,
 
 			want: "var iA2 a.IA2[c.C] = b",
 		},
@@ -79,8 +79,8 @@ c.IA1 = iA1`,
 				var ia *a.IA2[int]
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
 			}(),
-			implement: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
-			isInvoked: false,
+			implement:   testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			markExposed: false,
 
 			want: "var iA2 a.IA2[int] = b",
 		},
@@ -92,7 +92,7 @@ c.IA1 = iA1`,
 				symbols.NewSymbols([]component.Component{tc.bindTo, tc.implement}, []string{}),
 				tc.bindTo,
 				tc.implement,
-				tc.isInvoked,
+				tc.markExposed,
 			)
 
 			got := gen.GenerateBody()

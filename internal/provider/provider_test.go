@@ -9,13 +9,13 @@ import (
 func TestMark(t *testing.T) {
 	p := provider.NewConstructorProvider(a.NewA1, false)
 
-	if p.MarkInvoked() {
-		t.Error("MarkInvoked() should return false")
+	if p.MarkExposed() {
+		t.Error("MarkExposed() should return false")
 	}
 
 	p = provider.Mark(p)
 
-	if !p.MarkInvoked() {
-		t.Error("MarkInvoked() should return true")
+	if !p.MarkExposed() {
+		t.Error("MarkExposed() should return true")
 	}
 }

@@ -16,20 +16,20 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 	tests := []struct {
 		name string
 
-		in        []component.Component
-		out       component.Component
-		hasError  bool
-		isInvoked bool
+		in          []component.Component
+		out         component.Component
+		hasError    bool
+		markExposed bool
 
 		want string
 	}{
 		{
 			name: "no arguments",
 
-			in:        []component.Component{},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			in:          []component.Component{},
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1Func func() (a.A1)",
 		},
@@ -39,9 +39,9 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 			},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1Func func(a.A2) (a.A1)",
 		},
@@ -52,9 +52,9 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
 			},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1Func func(a.A2, b_2.B) (a.A1)",
 		},
@@ -64,9 +64,9 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[a.A2]{}))),
 			},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1Func func(a.A3[a.A2]) (a.A1)",
 		},
@@ -76,9 +76,9 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&a.A2{}))),
 			},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1Func func(*a.A2) (a.A1)",
 		},
@@ -88,19 +88,19 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 			},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1Func func(a.A2) (*a.A1)",
 		},
 		{
 			name: "has error",
 
-			in:        []component.Component{},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  true,
-			isInvoked: false,
+			in:          []component.Component{},
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    true,
+			markExposed: false,
 
 			want: "a1Func func() (a.A1, error)",
 		},
@@ -113,7 +113,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 				tc.in,
 				tc.out,
 				tc.hasError,
-				tc.isInvoked,
+				tc.markExposed,
 			)
 
 			got := gen.GenerateArgument()
@@ -128,20 +128,20 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 	tests := []struct {
 		name string
 
-		in        []component.Component
-		out       component.Component
-		hasError  bool
-		isInvoked bool
+		in          []component.Component
+		out         component.Component
+		hasError    bool
+		markExposed bool
 
 		want string
 	}{
 		{
 			name: "no arguments",
 
-			in:        []component.Component{},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			in:          []component.Component{},
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1 := a1Func()",
 		},
@@ -151,9 +151,9 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 			},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1 := a1Func(a2)",
 		},
@@ -164,19 +164,19 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
 			},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: false,
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: false,
 
 			want: "a1 := a1Func(a2, b)",
 		},
 		{
 			name: "has error",
 
-			in:        []component.Component{},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  true,
-			isInvoked: false,
+			in:          []component.Component{},
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    true,
+			markExposed: false,
 
 			want: `a1, err := a1Func()
 if err != nil{
@@ -184,24 +184,24 @@ if err != nil{
 }`,
 		},
 		{
-			name: "is invoked",
+			name: "mark exposed",
 
-			in:        []component.Component{},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  false,
-			isInvoked: true,
+			in:          []component.Component{},
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    false,
+			markExposed: true,
 
 			want: `a1 := a1Func()
 c.A1 = a1`,
 		},
 
 		{
-			name: "has error and is invoked",
+			name: "has error and mark exposed",
 
-			in:        []component.Component{},
-			out:       testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
-			hasError:  true,
-			isInvoked: true,
+			in:          []component.Component{},
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			hasError:    true,
+			markExposed: true,
 
 			want: `a1, err := a1Func()
 if err != nil{
@@ -218,7 +218,7 @@ c.A1 = a1`,
 				tc.in,
 				tc.out,
 				tc.hasError,
-				tc.isInvoked,
+				tc.markExposed,
 			)
 
 			got := gen.GenerateBody()

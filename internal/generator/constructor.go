@@ -18,7 +18,7 @@ type ConstructorGenerator struct {
 
 	hasError bool
 
-	isInvoked bool
+	markExposed bool
 }
 
 var _ BodyGenerator = &ConstructorGenerator{}
@@ -30,7 +30,7 @@ func NewConstructorGenerator(
 	constructorName string,
 	constructorPkgPath string,
 	hasError bool,
-	isInvoked bool,
+	markExposed bool,
 ) *ConstructorGenerator {
 	return &ConstructorGenerator{
 		symbols:            syms,
@@ -39,7 +39,7 @@ func NewConstructorGenerator(
 		constructorName:    constructorName,
 		constructorPkgPath: constructorPkgPath,
 		hasError:           hasError,
-		isInvoked:          isInvoked,
+		markExposed:        markExposed,
 	}
 }
 
@@ -70,7 +70,7 @@ func (g *ConstructorGenerator) GenerateBody() string {
 		b.WriteString(errorHandlingSegment)
 	}
 
-	if g.isInvoked {
+	if g.markExposed {
 		b.WriteString("\nc.")
 		b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.out)))
 		b.WriteString(" = ")

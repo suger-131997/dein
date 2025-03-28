@@ -12,9 +12,9 @@ type Provider struct {
 
 	pkgPaths []string
 
-	buildGenerator func(syms *symbols.Symbols, isInvoked bool) generator.BodyGenerator
+	buildGenerator func(syms *symbols.Symbols, markExposed bool) generator.BodyGenerator
 
-	markInvoked bool
+	markExposed bool
 
 	err error
 }
@@ -31,12 +31,12 @@ func (p *Provider) PkgPaths() []string {
 	return p.pkgPaths
 }
 
-func (p *Provider) MarkInvoked() bool {
-	return p.markInvoked
+func (p *Provider) MarkExposed() bool {
+	return p.markExposed
 }
 
 func (p *Provider) Generator(syms *symbols.Symbols) generator.BodyGenerator {
-	return p.buildGenerator(syms, p.markInvoked)
+	return p.buildGenerator(syms, p.markExposed)
 }
 
 func (p *Provider) CheckError() error {
@@ -44,6 +44,6 @@ func (p *Provider) CheckError() error {
 }
 
 func Mark(p *Provider) *Provider {
-	p.markInvoked = true
+	p.markExposed = true
 	return p
 }

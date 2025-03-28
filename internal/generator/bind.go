@@ -13,17 +13,17 @@ type BindGenerator struct {
 	bindTo    component.Component
 	implement component.Component
 
-	isInvoked bool
+	markExposed bool
 }
 
 var _ BodyGenerator = &BindGenerator{}
 
-func NewBindGenerator(symbols *symbols.Symbols, bindTo, implement component.Component, isInvoked bool) *BindGenerator {
+func NewBindGenerator(symbols *symbols.Symbols, bindTo, implement component.Component, markExposed bool) *BindGenerator {
 	return &BindGenerator{
-		symbols:   symbols,
-		bindTo:    bindTo,
-		implement: implement,
-		isInvoked: isInvoked,
+		symbols:     symbols,
+		bindTo:      bindTo,
+		implement:   implement,
+		markExposed: markExposed,
 	}
 }
 
@@ -44,7 +44,7 @@ func (g BindGenerator) GenerateBody() string {
 
 	b.WriteString(g.symbols.VarName(g.implement))
 
-	if g.isInvoked {
+	if g.markExposed {
 		b.WriteString("\nc.")
 		b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.bindTo)))
 		b.WriteString(" = ")

@@ -90,7 +90,7 @@ func (r *Resolver) Resolve() (*Generator, error) {
 	containerComponents := make([]component.Component, 0)
 	generators := make([]generator.BodyGenerator, 0, len(resolvedProviders))
 	for _, p := range resolvedProviders {
-		if p.MarkInvoked() {
+		if p.MarkExposed() {
 			containerComponents = append(containerComponents, p.Out())
 		}
 		generators = append(generators, p.Generator(syms))
