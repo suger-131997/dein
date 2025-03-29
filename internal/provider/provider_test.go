@@ -1,9 +1,10 @@
 package provider_test
 
 import (
+	"testing"
+
 	"github.com/suger-131997/dein/internal/provider"
 	"github.com/suger-131997/dein/internal/testpackages/a"
-	"testing"
 )
 
 func TestMark(t *testing.T) {

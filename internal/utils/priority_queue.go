@@ -29,6 +29,7 @@ func (pq *PriorityQueue[T]) Pop() any {
 	n := len(old)
 	item := old[n-1]
 	pq.queue = old[0 : n-1]
+
 	return item
 }
 
@@ -39,6 +40,7 @@ func NewPriorityQueue[T any](less func(i, j T) bool) *PriorityQueue[T] {
 		less:  less,
 	}
 	heap.Init(pq)
+
 	return pq
 }
 

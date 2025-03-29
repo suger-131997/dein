@@ -1,10 +1,11 @@
 package generator
 
 import (
+	"strings"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/symbols"
 	"github.com/suger-131997/dein/internal/utils"
-	"strings"
 )
 
 type ConstructorGenerator struct {
@@ -58,12 +59,15 @@ func (g *ConstructorGenerator) GenerateBody() string {
 	b.WriteString(".")
 	b.WriteString(g.constructorName)
 	b.WriteString("(")
+
 	for i := range len(g.in) {
 		b.WriteString(g.symbols.VarName(g.in[i]))
+
 		if i < len(g.in)-1 {
 			b.WriteString(", ")
 		}
 	}
+
 	b.WriteString(")")
 
 	if g.hasError {

@@ -1,9 +1,10 @@
 package generator
 
 import (
+	"strings"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/symbols"
-	"strings"
 )
 
 type ComponentArgumentGenerator struct {
@@ -22,6 +23,7 @@ func NewComponentArgumentGenerator(syms *symbols.Symbols, c component.Component)
 
 func (g *ComponentArgumentGenerator) GenerateArgument() string {
 	var b strings.Builder
+
 	b.WriteString(g.symbols.VarName(g.c))
 
 	b.WriteString(" ")
@@ -29,6 +31,7 @@ func (g *ComponentArgumentGenerator) GenerateArgument() string {
 	if g.c.IsPointer() {
 		b.WriteString("*")
 	}
+
 	b.WriteString(g.symbols.PkgName(g.c.PkgPath()))
 	b.WriteString(".")
 	b.WriteString(g.c.Name())

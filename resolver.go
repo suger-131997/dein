@@ -2,12 +2,13 @@ package dein
 
 import (
 	"errors"
+	"sort"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/generator"
 	"github.com/suger-131997/dein/internal/provider"
 	"github.com/suger-131997/dein/internal/symbols"
 	"github.com/suger-131997/dein/internal/utils"
-	"sort"
 )
 
 // Resolver is a struct that resolves the dependency graph of the providers.
@@ -32,22 +33,26 @@ func (r *Resolver) Resolve() (*Generator, error) {
 	providers := make(map[component.Component]*provider.Provider)
 	graph := make(map[component.Component][]component.Component)
 	indegrees := make(map[component.Component]int)
+
 	for _, p := range r.providers {
 		if _, ok := graph[p.Out()]; ok {
 			return nil, errors.New("duplicate component provided")
 		}
+
 		providers[p.Out()] = p
 		graph[p.Out()] = make([]component.Component, 0)
 		indegrees[p.Out()] = 0
 	}
 
 	argumentComponents := make([]component.Component, 0)
+
 	for _, p := range r.providers {
 		for _, in := range p.In() {
 			if _, ok := graph[in]; !ok {
 				argumentComponents = append(argumentComponents, in)
 				continue
 			}
+
 			graph[in] = append(graph[in], p.Out())
 			indegrees[p.Out()]++
 		}
@@ -80,25 +85,30 @@ func (r *Resolver) Resolve() (*Generator, error) {
 
 	components := make([]component.Component, 0)
 	pkgPaths := make([]string, 0)
+
 	for _, p := range providers {
 		components = append(components, p.In()...)
 		components = append(components, p.Out())
 		pkgPaths = append(pkgPaths, p.PkgPaths()...)
 	}
+
 	syms := symbols.NewSymbols(components, pkgPaths)
 
 	containerComponents := make([]component.Component, 0)
 	generators := make([]generator.BodyGenerator, 0, len(resolvedProviders))
+
 	for _, p := range resolvedProviders {
 		if p.MarkExposed() {
 			containerComponents = append(containerComponents, p.Out())
 		}
+
 		generators = append(generators, p.Generator(syms))
 	}
 
 	sort.Slice(containerComponents, func(i, j int) bool {
 		return containerComponents[i].Less(containerComponents[j])
 	})
+
 	containerGenerators := make([]*generator.ContainerGenerator, 0)
 	for _, c := range containerComponents {
 		containerGenerators = append(containerGenerators, generator.NewContainerGenerator(syms, c))
@@ -107,10 +117,12 @@ func (r *Resolver) Resolve() (*Generator, error) {
 	sort.Slice(argumentComponents, func(i, j int) bool {
 		return argumentComponents[i].Less(argumentComponents[j])
 	})
+
 	argumentGenerators := make([]generator.ArgumentGenerator, 0)
 	for _, c := range argumentComponents {
 		argumentGenerators = append(argumentGenerators, generator.NewComponentArgumentGenerator(syms, c))
 	}
+
 	for _, g := range generators {
 		if ag, ok := g.(generator.ArgumentGenerator); ok {
 			argumentGenerators = append(argumentGenerators, ag)

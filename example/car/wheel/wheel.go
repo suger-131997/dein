@@ -2,8 +2,7 @@ package wheel
 
 import "fmt"
 
-type Wheel struct {
-}
+type Wheel struct{}
 
 func NewWheel() Wheel {
 	return Wheel{}

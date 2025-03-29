@@ -2,15 +2,17 @@ package provider
 
 import (
 	"errors"
+	"reflect"
+	"testing"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/testpackages/a"
 	"github.com/suger-131997/dein/internal/testpackages/b"
 	"github.com/suger-131997/dein/internal/testpackages/c"
 	"github.com/suger-131997/dein/internal/testutils"
-	"reflect"
-	"testing"
 )
 
 func TestNewConstructorProvider(t *testing.T) {
@@ -111,9 +113,11 @@ func TestNewConstructorProvider(t *testing.T) {
 					tt.Errorf("unexpected error: %v", err)
 					return
 				}
+
 				if err.Error() != tc.wantErr.Error() {
 					tt.Errorf("error mismatch: got %v, want %v", err, tc.wantErr)
 				}
+
 				return
 			}
 

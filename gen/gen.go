@@ -19,6 +19,7 @@ func main() {
 	flag.Parse()
 
 	var buf bytes.Buffer
+
 	err := template.Must(template.New("").Parse(tmpl)).Execute(&buf, num)
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +30,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = os.WriteFile(*filename, data, 0644)
+	err = os.WriteFile(*filename, data, 0o644)
 	if err != nil {
 		log.Fatal(err)
 	}

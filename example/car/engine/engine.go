@@ -32,6 +32,7 @@ func NewEngine(t EngineType) (*Engine, error) {
 	if t == EngineTypeUnknown {
 		return nil, errors.New("engine type is unknown")
 	}
+
 	return &Engine{
 		engineType: t,
 	}, nil

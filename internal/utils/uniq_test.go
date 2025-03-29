@@ -1,10 +1,12 @@
 package utils_test
 
 import (
+	"testing"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+
 	"github.com/suger-131997/dein/internal/utils"
-	"testing"
 )
 
 func TestUniq(t *testing.T) {
@@ -21,6 +23,7 @@ func TestUniq(t *testing.T) {
 		type t struct {
 			Num int
 		}
+
 		uniq := utils.Uniq([]t{{1}, {2}, {3}, {1}, {2}, {3}, {4}})
 		if diff := cmp.Diff([]t{{1}, {2}, {3}, {4}}, uniq, cmpopts.SortSlices(func(i, j t) bool {
 			return i.Num < j.Num

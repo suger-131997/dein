@@ -1,10 +1,11 @@
 package generator
 
 import (
+	"strings"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/symbols"
 	"github.com/suger-131997/dein/internal/utils"
-	"strings"
 )
 
 type ContainerGenerator struct {
@@ -21,6 +22,7 @@ func NewContainerGenerator(syms *symbols.Symbols, c component.Component) *Contai
 
 func (g *ContainerGenerator) Generate() string {
 	var b strings.Builder
+
 	b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.c)))
 
 	b.WriteString(" ")
@@ -28,6 +30,7 @@ func (g *ContainerGenerator) Generate() string {
 	if g.c.IsPointer() {
 		b.WriteString("*")
 	}
+
 	b.WriteString(g.symbols.PkgName(g.c.PkgPath()))
 	b.WriteString(".")
 	b.WriteString(g.c.Name())

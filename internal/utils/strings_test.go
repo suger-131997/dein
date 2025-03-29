@@ -1,8 +1,9 @@
 package utils_test
 
 import (
-	"github.com/suger-131997/dein/internal/utils"
 	"testing"
+
+	"github.com/suger-131997/dein/internal/utils"
 )
 
 func TestHeadToLower(t *testing.T) {

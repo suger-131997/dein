@@ -2,17 +2,17 @@ package component
 
 import (
 	"errors"
-	"github.com/google/go-cmp/cmp"
 	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
-type testComponent struct {
-}
-type testGenericsComponent[T any] struct {
-}
-type testMultiGenericsComponent[T, U any] struct {
-}
+type (
+	testComponent                        struct{}
+	testGenericsComponent[T any]         struct{}
+	testMultiGenericsComponent[T, U any] struct{}
+)
 
 func TestNewComponent(t *testing.T) {
 	tests := []struct {
@@ -83,9 +83,11 @@ func TestNewComponent(t *testing.T) {
 					tt.Errorf("unexpected error: %v", err)
 					return
 				}
+
 				if err.Error() != tc.wantErr.Error() {
 					tt.Errorf("error mismatch: got %v, want %v", err, tc.wantErr)
 				}
+
 				return
 			}
 
@@ -144,6 +146,7 @@ func TestComponentTypeParams(t *testing.T) {
 				tt.Fatalf("unexpected error: %v", err)
 				return
 			}
+
 			got := c.TypeParams()
 
 			if diff := cmp.Diff(got, tc.want, cmp.AllowUnexported(TypeParam{})); diff != "" {

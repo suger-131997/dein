@@ -1,9 +1,10 @@
 package generator
 
 import (
+	"strings"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/symbols"
-	"strings"
 )
 
 type ArgumentGenerator interface {
@@ -25,16 +26,20 @@ func writeTypeParams(b *strings.Builder, syms *symbols.Symbols, params []compone
 	}
 
 	b.WriteString("[")
+
 	for i, p := range params {
 		if path := p.PkgPath(); path != "" {
 			b.WriteString(syms.PkgName(path))
 			b.WriteString(".")
 		}
+
 		b.WriteString(p.Name())
 		writeTypeParams(b, syms, p.TypeParams())
+
 		if i != len(params)-1 {
 			b.WriteString(", ")
 		}
 	}
+
 	b.WriteString("]")
 }

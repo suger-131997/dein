@@ -1,7 +1,11 @@
 package generator_test
 
 import (
+	"reflect"
+	"testing"
+
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/generator"
 	"github.com/suger-131997/dein/internal/symbols"
@@ -9,8 +13,6 @@ import (
 	"github.com/suger-131997/dein/internal/testpackages/b"
 	"github.com/suger-131997/dein/internal/testpackages/c"
 	"github.com/suger-131997/dein/internal/testutils"
-	"reflect"
-	"testing"
 )
 
 func TestComponentArgumentGeneratorGenerate(t *testing.T) {

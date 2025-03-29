@@ -1,10 +1,11 @@
 package generator
 
 import (
+	"strings"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/symbols"
 	"github.com/suger-131997/dein/internal/utils"
-	"strings"
 )
 
 type BindGenerator struct {
@@ -29,6 +30,7 @@ func NewBindGenerator(symbols *symbols.Symbols, bindTo, implement component.Comp
 
 func (g BindGenerator) GenerateBody() string {
 	var b strings.Builder
+
 	b.WriteString("var ")
 
 	b.WriteString(g.symbols.VarName(g.bindTo))

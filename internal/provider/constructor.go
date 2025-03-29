@@ -2,14 +2,15 @@ package provider
 
 import (
 	"errors"
-	"github.com/suger-131997/dein/internal/component"
-	"github.com/suger-131997/dein/internal/generator"
-	"github.com/suger-131997/dein/internal/symbols"
-	"github.com/suger-131997/dein/internal/utils"
 	"path"
 	"reflect"
 	"runtime"
 	"strings"
+
+	"github.com/suger-131997/dein/internal/component"
+	"github.com/suger-131997/dein/internal/generator"
+	"github.com/suger-131997/dein/internal/symbols"
+	"github.com/suger-131997/dein/internal/utils"
 )
 
 func NewConstructorProvider(f any, hasError bool) *Provider {
@@ -29,6 +30,7 @@ func NewConstructorProvider(f any, hasError bool) *Provider {
 			err: errors.New("anonymous function is not allowed"),
 		}
 	}
+
 	constructorPkgPath := funcPath[:strings.LastIndex(funcPath, ".")]
 	constructorName := l[1]
 
@@ -37,6 +39,7 @@ func NewConstructorProvider(f any, hasError bool) *Provider {
 	ft := fv.Type()
 
 	in := make([]component.Component, 0, ft.NumIn())
+
 	for i := 0; i < ft.NumIn(); i++ {
 		c, err := component.NewComponent(ft.In(i))
 		if err != nil {
@@ -44,6 +47,7 @@ func NewConstructorProvider(f any, hasError bool) *Provider {
 				err: err,
 			}
 		}
+
 		in = append(in, c)
 		pkgPaths = append(pkgPaths, c.PkgPaths()...)
 	}
@@ -54,6 +58,7 @@ func NewConstructorProvider(f any, hasError bool) *Provider {
 			err: err,
 		}
 	}
+
 	pkgPaths = append(pkgPaths, out.PkgPaths()...)
 
 	return &Provider{

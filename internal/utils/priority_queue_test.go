@@ -1,9 +1,11 @@
 package utils_test
 
 import (
-	"github.com/google/go-cmp/cmp"
-	"github.com/suger-131997/dein/internal/utils"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+
+	"github.com/suger-131997/dein/internal/utils"
 )
 
 func TestPriorityQueue(t *testing.T) {

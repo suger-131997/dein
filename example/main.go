@@ -1,9 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/suger-131997/dein/example/car/engine"
 	"github.com/suger-131997/dein/example/car/light"
-	"log"
 )
 
 func main() {

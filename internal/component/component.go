@@ -2,10 +2,11 @@ package component
 
 import (
 	"errors"
-	"github.com/suger-131997/dein/internal/utils"
 	"path"
 	"reflect"
 	"strings"
+
+	"github.com/suger-131997/dein/internal/utils"
 )
 
 type Component struct {
@@ -24,6 +25,7 @@ func NewComponent(t reflect.Type) (Component, error) {
 		if t.Name() == "" {
 			return Component{}, errors.New("anonymous struct is not supported")
 		}
+
 		return Component{}, errors.New("builtin type is not supported")
 	}
 
@@ -31,6 +33,7 @@ func NewComponent(t reflect.Type) (Component, error) {
 	if name == "" {
 		return Component{}, errors.New("unnamed type is not supported")
 	}
+
 	if i := strings.Index(name, "["); i >= 0 {
 		params := strings.Split(name[i+1:len(name)-1], ",")
 		for _, p := range params {
@@ -51,12 +54,15 @@ func (c Component) Less(other Component) bool {
 	if c.pkgPath != other.pkgPath {
 		return c.pkgPath < other.pkgPath
 	}
+
 	if c.name != other.name {
 		return c.name < other.name
 	}
+
 	if c.isPointer {
 		return false
 	}
+
 	return true
 }
 
@@ -78,12 +84,14 @@ func (c Component) IsPointer() bool {
 
 func (c Component) TypeParams() []TypeParam {
 	typeParams := make([]TypeParam, 0)
+
 	if i := strings.Index(c.name, "["); i >= 0 {
 		params := strings.Split(c.name[i+1:len(c.name)-1], ",")
 		for _, p := range params {
 			typeParams = append(typeParams, newTypeParams(p))
 		}
 	}
+
 	return typeParams
 }
 
@@ -137,12 +145,14 @@ func (t TypeParam) PkgPath() string {
 
 func (t TypeParam) TypeParams() []TypeParam {
 	typeParams := make([]TypeParam, 0)
+
 	if i := strings.Index(t.name, "["); i >= 0 {
 		params := strings.Split(t.name[i+1:len(t.name)-1], ",")
 		for _, p := range params {
 			typeParams = append(typeParams, newTypeParams(p))
 		}
 	}
+
 	return typeParams
 }
 

@@ -1,15 +1,17 @@
 package generator_test
 
 import (
+	"reflect"
+	"testing"
+
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/generator"
 	"github.com/suger-131997/dein/internal/symbols"
 	"github.com/suger-131997/dein/internal/testpackages/a"
 	"github.com/suger-131997/dein/internal/testpackages/b"
 	"github.com/suger-131997/dein/internal/testutils"
-	"reflect"
-	"testing"
 )
 
 func TestFunctionGeneratorGenerateArgument(t *testing.T) {

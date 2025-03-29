@@ -1,10 +1,11 @@
 package generator
 
 import (
+	"strings"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/symbols"
 	"github.com/suger-131997/dein/internal/utils"
-	"strings"
 )
 
 type FunctionGenerator struct {
@@ -18,8 +19,10 @@ type FunctionGenerator struct {
 	markExposed bool
 }
 
-var _ ArgumentGenerator = &FunctionGenerator{}
-var _ BodyGenerator = &FunctionGenerator{}
+var (
+	_ ArgumentGenerator = &FunctionGenerator{}
+	_ BodyGenerator     = &FunctionGenerator{}
+)
 
 func NewFunctionGenerator(
 	syms *symbols.Symbols,
@@ -47,10 +50,12 @@ func (g *FunctionGenerator) GenerateArgument() string {
 		if g.in[i].IsPointer() {
 			b.WriteString("*")
 		}
+
 		b.WriteString(g.symbols.PkgName(g.in[i].PkgPath()))
 		b.WriteString(".")
 		b.WriteString(g.in[i].Name())
 		writeTypeParams(&b, g.symbols, g.in[i].TypeParams())
+
 		if i < len(g.in)-1 {
 			b.WriteString(", ")
 		}
@@ -61,10 +66,12 @@ func (g *FunctionGenerator) GenerateArgument() string {
 	if g.out.IsPointer() {
 		b.WriteString("*")
 	}
+
 	b.WriteString(g.symbols.PkgName(g.out.PkgPath()))
 	b.WriteString(".")
 	b.WriteString(g.out.Name())
 	writeTypeParams(&b, g.symbols, g.out.TypeParams())
+
 	if g.hasError {
 		b.WriteString(", error")
 	}
@@ -87,12 +94,15 @@ func (g *FunctionGenerator) GenerateBody() string {
 
 	b.WriteString(g.symbols.VarName(g.out))
 	b.WriteString("Func(")
+
 	for i := range len(g.in) {
 		b.WriteString(g.symbols.VarName(g.in[i]))
+
 		if i < len(g.in)-1 {
 			b.WriteString(", ")
 		}
 	}
+
 	b.WriteString(")")
 
 	if g.hasError {

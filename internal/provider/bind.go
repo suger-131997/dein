@@ -3,11 +3,12 @@ package provider
 import (
 	"errors"
 	"fmt"
+	"reflect"
+
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/generator"
 	"github.com/suger-131997/dein/internal/symbols"
 	"github.com/suger-131997/dein/internal/utils"
-	"reflect"
 )
 
 func NewBindProvider(i, t reflect.Type) *Provider {
@@ -16,6 +17,7 @@ func NewBindProvider(i, t reflect.Type) *Provider {
 			err: errors.New("bind target must be an interface"),
 		}
 	}
+
 	if !t.Implements(i) {
 		return &Provider{
 			err: fmt.Errorf("%s must implement the interface %s", t.String(), i.String()),
@@ -28,6 +30,7 @@ func NewBindProvider(i, t reflect.Type) *Provider {
 			err: err,
 		}
 	}
+
 	out, err := component.NewComponent(i)
 	if err != nil {
 		return &Provider{
