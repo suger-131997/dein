@@ -83,6 +83,10 @@ func (r *Resolver) Resolve() (*Generator, error) {
 		}
 	}
 
+	if len(resolvedProviders) != len(graph) {
+		return nil, errors.New("circular dependency detected")
+	}
+
 	components := make([]component.Component, 0)
 	pkgPaths := make([]string, 0)
 
