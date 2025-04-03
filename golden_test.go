@@ -1,8 +1,6 @@
 package dein_test
 
 import (
-	"github.com/suger-131997/dein/internal/testpackages/b"
-	"github.com/suger-131997/dein/internal/testpackages/c"
 	"go/format"
 	"os"
 	"strconv"
@@ -13,6 +11,8 @@ import (
 
 	"github.com/suger-131997/dein"
 	"github.com/suger-131997/dein/internal/testpackages/a"
+	"github.com/suger-131997/dein/internal/testpackages/b"
+	"github.com/suger-131997/dein/internal/testpackages/c"
 )
 
 func filename(n string) string {

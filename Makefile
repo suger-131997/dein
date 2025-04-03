@@ -4,16 +4,17 @@ install-tools:
 
 .PHONY: lint
 lint: install-tools
-	@go tool -modfile=golangci-lint.mod golangci-lint run
+	go tool -modfile=golangci-lint.mod golangci-lint run
 
 .PHONY: lint-fix
 lint-fix: install-tools
-	@go tool -modfile=golangci-lint.mod golangci-lint run --fix
+	go tool -modfile=golangci-lint.mod golangci-lint run --fix
 
 .PHONY: test
 test:
 	go test -v ./...
 
+.PHONY: generate
 generate:
 	go generate ./...
 	rm ./testdata/*
