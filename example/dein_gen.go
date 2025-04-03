@@ -16,7 +16,7 @@ func NewContainer(
 	engineType engine_2.EngineType,
 	lightFunc func() light_2.Light,
 ) (*Container, error) {
-	c := &Container{}
+	__c := &Container{}
 
 	engine, err := engine_2.NewEngine(engineType)
 	if err != nil {
@@ -26,7 +26,7 @@ func NewContainer(
 	wheel := wheel_2.NewWheel()
 	car := car_2.NewCar(engine, wheel, light)
 	var iCar car_2.ICar = car
-	c.ICar = iCar
+	__c.ICar = iCar
 
-	return c, nil
+	return __c, nil
 }

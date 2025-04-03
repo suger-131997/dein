@@ -75,7 +75,7 @@ func (g *ConstructorGenerator) GenerateBody() string {
 	}
 
 	if g.markExposed {
-		b.WriteString("\nc.")
+		b.WriteString("\n__c.")
 		b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.out)))
 		b.WriteString(" = ")
 		b.WriteString(g.symbols.VarName(g.out))

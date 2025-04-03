@@ -88,7 +88,7 @@ if err != nil{
 			hasError:           false,
 			markExposed:        true,
 			want: `a1 := a.NewA1()
-c.A1 = a1`,
+__c.A1 = a1`,
 		},
 		{
 			name: "has error and mark exposed",
@@ -103,7 +103,7 @@ c.A1 = a1`,
 if err != nil{
 	return nil, err
 }
-c.A1 = a1`,
+__c.A1 = a1`,
 		},
 	}
 

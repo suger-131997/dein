@@ -83,12 +83,12 @@ func NewContainer(
 	{{.}},
 {{end -}}
 ) (*Container, error) {
-	c := &Container{}
+	__c := &Container{}
 
 {{range .Bodies -}}
 	{{.}}
 {{end}}
 
-	return c, nil
+	return __c, nil
 }
 `

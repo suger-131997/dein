@@ -47,7 +47,7 @@ func (g BindGenerator) GenerateBody() string {
 	b.WriteString(g.symbols.VarName(g.implement))
 
 	if g.markExposed {
-		b.WriteString("\nc.")
+		b.WriteString("\n__c.")
 		b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.bindTo)))
 		b.WriteString(" = ")
 		b.WriteString(g.symbols.VarName(g.bindTo))

@@ -15,6 +15,10 @@ func NewA1() A1 {
 	return A1{}
 }
 
+func NewA2(A1, *A1) A2 {
+	return A2{}
+}
+
 func NewA3[T any]() A3[T] {
 	return A3[T]{}
 }

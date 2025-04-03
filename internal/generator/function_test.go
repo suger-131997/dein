@@ -194,7 +194,7 @@ if err != nil{
 			markExposed: true,
 
 			want: `a1 := a1Func()
-c.A1 = a1`,
+__c.A1 = a1`,
 		},
 
 		{
@@ -209,7 +209,7 @@ c.A1 = a1`,
 if err != nil{
 	return nil, err
 }
-c.A1 = a1`,
+__c.A1 = a1`,
 		},
 	}
 
