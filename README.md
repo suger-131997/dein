@@ -1,6 +1,6 @@
 # Dein - Dependency Injection  
 
-A dependency injection library for Go that uses reflection to generate code. 
+A dependency injection library for Go that uses reflection-based code generation.
 
 # Installation
 
