@@ -14,7 +14,7 @@ type Container struct {
 
 func NewContainer(
 	engineType engine_2.EngineType,
-	lightFunc func() light_2.Light,
+	__funcLight func() light_2.Light,
 ) (*Container, error) {
 	__c := &Container{}
 
@@ -22,7 +22,7 @@ func NewContainer(
 	if err != nil {
 		return nil, err
 	}
-	light := lightFunc()
+	light := __funcLight()
 	wheel := wheel_2.NewWheel()
 	car := car_2.NewCar(engine, wheel, light)
 	var iCar car_2.ICar = car

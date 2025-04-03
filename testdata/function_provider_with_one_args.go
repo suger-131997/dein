@@ -12,12 +12,12 @@ type Container struct {
 
 func NewContainer(
 	a3 a.A3[int],
-	bFunc func(a.A1, a.A3[int]) b_2.B,
+	__funcB func(a.A1, a.A3[int]) b_2.B,
 ) (*Container, error) {
 	__c := &Container{}
 
 	a1 := a.NewA1()
-	b := bFunc(a1, a3)
+	b := __funcB(a1, a3)
 	__c.B = b
 
 	return __c, nil

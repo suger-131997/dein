@@ -43,8 +43,9 @@ func NewFunctionGenerator(
 func (g *FunctionGenerator) GenerateArgument() string {
 	var b strings.Builder
 
-	b.WriteString(g.symbols.VarName(g.out))
-	b.WriteString("Func func(")
+	b.WriteString("__func")
+	b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.out)))
+	b.WriteString(" func(")
 
 	for i := range len(g.in) {
 		if g.in[i].IsPointer() {
@@ -92,8 +93,9 @@ func (g *FunctionGenerator) GenerateBody() string {
 
 	b.WriteString(" := ")
 
-	b.WriteString(g.symbols.VarName(g.out))
-	b.WriteString("Func(")
+	b.WriteString("__func")
+	b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.out)))
+	b.WriteString("(")
 
 	for i := range len(g.in) {
 		b.WriteString(g.symbols.VarName(g.in[i]))

@@ -13,14 +13,14 @@ type Container struct {
 
 func NewContainer(
 	a3 a.A3[int],
-	a4Func func(a.A1) a.A4[int, string],
-	bFunc func(a.A1, a.A3[int]) *b_2.B,
+	__funcA4 func(a.A1) a.A4[int, string],
+	__funcB func(a.A1, a.A3[int]) *b_2.B,
 ) (*Container, error) {
 	__c := &Container{}
 
 	a1 := a.NewA1()
-	a4 := a4Func(a1)
-	b := bFunc(a1, a3)
+	a4 := __funcA4(a1)
+	b := __funcB(a1, a3)
 	var iA1 a.IA1 = b
 	c, err := c_2.NewC2(iA1, a4)
 	if err != nil {

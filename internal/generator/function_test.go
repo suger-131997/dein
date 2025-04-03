@@ -33,7 +33,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1Func func() (a.A1)",
+			want: "__funcA1 func() (a.A1)",
 		},
 		{
 			name: "one argument",
@@ -45,7 +45,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1Func func(a.A2) (a.A1)",
+			want: "__funcA1 func(a.A2) (a.A1)",
 		},
 		{
 			name: "two arguments",
@@ -58,7 +58,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1Func func(a.A2, b_2.B) (a.A1)",
+			want: "__funcA1 func(a.A2, b_2.B) (a.A1)",
 		},
 		{
 			name: "generics argument",
@@ -70,7 +70,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1Func func(a.A3[a.A2]) (a.A1)",
+			want: "__funcA1 func(a.A3[a.A2]) (a.A1)",
 		},
 		{
 			name: "pointer argument",
@@ -82,7 +82,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1Func func(*a.A2) (a.A1)",
+			want: "__funcA1 func(*a.A2) (a.A1)",
 		},
 		{
 			name: "pointer return",
@@ -94,7 +94,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1Func func(a.A2) (*a.A1)",
+			want: "__funcA1 func(a.A2) (*a.A1)",
 		},
 		{
 			name: "has error",
@@ -104,7 +104,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 			hasError:    true,
 			markExposed: false,
 
-			want: "a1Func func() (a.A1, error)",
+			want: "__funcA1 func() (a.A1, error)",
 		},
 	}
 
@@ -145,7 +145,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1 := a1Func()",
+			want: "a1 := __funcA1()",
 		},
 		{
 			name: "one argument",
@@ -157,7 +157,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1 := a1Func(a2)",
+			want: "a1 := __funcA1(a2)",
 		},
 		{
 			name: "two arguments",
@@ -170,7 +170,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 			hasError:    false,
 			markExposed: false,
 
-			want: "a1 := a1Func(a2, b)",
+			want: "a1 := __funcA1(a2, b)",
 		},
 		{
 			name: "has error",
@@ -180,7 +180,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 			hasError:    true,
 			markExposed: false,
 
-			want: `a1, err := a1Func()
+			want: `a1, err := __funcA1()
 if err != nil{
 	return nil, err
 }`,
@@ -193,7 +193,7 @@ if err != nil{
 			hasError:    false,
 			markExposed: true,
 
-			want: `a1 := a1Func()
+			want: `a1 := __funcA1()
 __c.A1 = a1`,
 		},
 
@@ -205,7 +205,7 @@ __c.A1 = a1`,
 			hasError:    true,
 			markExposed: true,
 
-			want: `a1, err := a1Func()
+			want: `a1, err := __funcA1()
 if err != nil{
 	return nil, err
 }
