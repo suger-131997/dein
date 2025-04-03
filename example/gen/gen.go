@@ -25,7 +25,7 @@ func main() {
 	r := dein.NewResolver()
 
 	// Register the providers
-	dein.Register(r, dein.Mark(dein.Bind[car.ICar, *car.Car]()))
+	dein.Register(r, dein.Mark(dein.Bind[*car.Car, car.ICar]()))
 	dein.Register(r, dein.PE1(engine.NewEngine))
 	dein.Register(r, dein.P0(wheel.NewWheel))
 	dein.Register(r, dein.P3(car.NewCar))

@@ -60,7 +60,7 @@ func TestGolden(t *testing.T) {
 
 			pkgName: "main",
 			register: func(r *dein.Resolver) {
-				dein.Register(r, dein.Bind[a.IA1, b.B]())
+				dein.Register(r, dein.Bind[b.B, a.IA1]())
 			},
 		},
 		{
@@ -68,7 +68,7 @@ func TestGolden(t *testing.T) {
 
 			pkgName: "main",
 			register: func(r *dein.Resolver) {
-				dein.Register(r, dein.Bind[a.IA1, b.B]())
+				dein.Register(r, dein.Bind[b.B, a.IA1]())
 				dein.Register(r, dein.P1(b.NewB))
 			},
 		},
@@ -95,7 +95,7 @@ func TestGolden(t *testing.T) {
 				dein.Register(r, dein.PF2[a.A1, a.A3[int], *b.B]())
 				dein.Register(r, dein.PF1[a.A1, a.A4[int, string]]())
 				dein.Register(r, dein.P0(a.NewA1))
-				dein.Register(r, dein.Bind[a.IA1, *b.B]())
+				dein.Register(r, dein.Bind[*b.B, a.IA1]())
 				dein.Register(r, dein.Mark(dein.PE2(c.NewC2)))
 			},
 		},
