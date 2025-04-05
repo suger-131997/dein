@@ -99,11 +99,22 @@ func TestGolden(t *testing.T) {
 				dein.Register(r, dein.Mark(dein.PE2(c.NewC2)))
 			},
 		},
+		{
+			name:    "complex case with multiple dependencies dist to testpackages c",
+			pkgName: "github.com/suger-131997/dein/internal/testpackages/c",
+			register: func(r *dein.Resolver) {
+				dein.Register(r, dein.PF2[a.A1, a.A3[int], *b.B]())
+				dein.Register(r, dein.PF1[a.A1, a.A4[int, string]]())
+				dein.Register(r, dein.P0(a.NewA1))
+				dein.Register(r, dein.Bind[*b.B, a.IA1]())
+				dein.Register(r, dein.Mark(dein.PE2(c.NewC2)))
+			},
+		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(tt *testing.T) {
-			r := dein.NewResolver()
+			r := dein.NewResolver(tc.pkgName)
 			tc.register(r)
 
 			gen, err := r.Resolve()
@@ -111,7 +122,7 @@ func TestGolden(t *testing.T) {
 				tt.Fatalf("Resolve() unexpeted error: %v", err)
 			}
 
-			raw, err := gen.Generate(tc.pkgName)
+			raw, err := gen.Generate()
 			if err != nil {
 				tt.Fatalf("Generate() unexpeted error: %v", err)
 			}

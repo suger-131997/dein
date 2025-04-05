@@ -13,12 +13,13 @@ import (
 
 // Resolver is a struct that resolves the dependency graph of the providers.
 type Resolver struct {
-	providers []*provider.Provider
+	distPkgPath string
+	providers   []*provider.Provider
 }
 
 // NewResolver creates a new Resolver.
-func NewResolver() *Resolver {
-	return &Resolver{}
+func NewResolver(distPkgPath string) *Resolver {
+	return &Resolver{distPkgPath: distPkgPath}
 }
 
 // Resolve resolves the dependency graph of the providers and returns a source code generator.
@@ -96,7 +97,7 @@ func (r *Resolver) Resolve() (*Generator, error) {
 		pkgPaths = append(pkgPaths, p.PkgPaths()...)
 	}
 
-	syms := symbols.NewSymbols(components, pkgPaths)
+	syms := symbols.NewSymbols(r.distPkgPath, components, pkgPaths)
 
 	containerComponents := make([]component.Component, 0)
 	generators := make([]generator.BodyGenerator, 0, len(resolvedProviders))

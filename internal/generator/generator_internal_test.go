@@ -19,79 +19,98 @@ func TestWriteTypeParams(t *testing.T) {
 	tests := []struct {
 		name string
 
-		in component.Component
+		distPkgPath string
+		in          component.Component
 
 		want string
 	}{
 		{
 			name: "no type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 
 			want: "",
 		},
 		{
 			name: "one type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[b.B]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[b.B]{}))),
 
 			want: "[b.B]",
 		},
 		{
 			name: "one pointer type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*b.B]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*b.B]{}))),
 
 			want: "[*b.B]",
 		},
 		{
 			name: "one pointer of pointer type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[**b.B]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[**b.B]{}))),
 
 			want: "[**b.B]",
 		},
 		{
 			name: "one array type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[[]b.B]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[[]b.B]{}))),
 
 			want: "[[]b.B]",
 		},
 		{
 			name: "one array pointer type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*[]b.B]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*[]b.B]{}))),
 
 			want: "[*[]b.B]",
 		},
 		{
 			name: "two type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A4[b.B, c.C]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A4[b.B, c.C]{}))),
 
 			want: "[b.B, c.C]",
 		},
 		{
 			name: "build-in type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[int]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[int]{}))),
 
 			want: "[int]",
 		},
 		{
 			name: "build-in pointer type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*int]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*int]{}))),
 
 			want: "[*int]",
 		},
 		{
 			name: "nest type params",
 
-			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[a.A3[b.B]]{}))),
+			distPkgPath: "main",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[a.A3[b.B]]{}))),
 
 			want: "[a.A3[b.B]]",
+		},
+		{
+			name: "in dist package type params",
+
+			distPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
+			in:          testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[a.A3[b.B]]{}))),
+
+			want: "[A3[b.B]]",
 		},
 	}
 
@@ -99,7 +118,7 @@ func TestWriteTypeParams(t *testing.T) {
 		t.Run(tc.name, func(tt *testing.T) {
 			var out strings.Builder
 
-			writeTypeParams(&out, symbols.NewSymbols([]component.Component{tc.in}, []string{}), tc.in.TypeParams())
+			writeTypeParams(&out, symbols.NewSymbols(tc.distPkgPath, []component.Component{tc.in}, []string{}), tc.in.TypeParams())
 			got := out.String()
 
 			if diff := cmp.Diff(got, tc.want); diff != "" {

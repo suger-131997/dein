@@ -10,12 +10,13 @@ import (
 )
 
 type Symbols struct {
+	distPkgPath     string
 	varNames        map[component.Component]string
 	pkgNames        map[string]string
 	orderedPkgPaths []string
 }
 
-func NewSymbols(_components []component.Component, _pkgPaths []string) *Symbols {
+func NewSymbols(distPkgPath string, _components []component.Component, _pkgPaths []string) *Symbols {
 	components := utils.Uniq(_components)
 	sort.Slice(components, func(i, j int) bool {
 		return components[i].Less(components[j])
@@ -30,6 +31,8 @@ func NewSymbols(_components []component.Component, _pkgPaths []string) *Symbols 
 	sort.Strings(pkgPaths)
 
 	nameCounts := make(map[string]int)
+	nameCounts[path.Base(distPkgPath)] = 1
+
 	varNames := make(map[component.Component]string, len(components))
 
 	for _, c := range components {
@@ -50,6 +53,10 @@ func NewSymbols(_components []component.Component, _pkgPaths []string) *Symbols 
 	pkgNames := make(map[string]string, len(pkgPaths))
 
 	for _, p := range pkgPaths {
+		if p == distPkgPath {
+			continue
+		}
+
 		pkgName := path.Base(p)
 		if count, ok := nameCounts[pkgName]; ok {
 			pkgNames[p] = fmt.Sprintf("%s_%d", pkgName, count+1)
@@ -63,10 +70,15 @@ func NewSymbols(_components []component.Component, _pkgPaths []string) *Symbols 
 	}
 
 	return &Symbols{
+		distPkgPath:     distPkgPath,
 		varNames:        varNames,
 		pkgNames:        pkgNames,
 		orderedPkgPaths: pkgPaths,
 	}
+}
+
+func (s *Symbols) DistPkgName() string {
+	return path.Base(s.distPkgPath)
 }
 
 func (s *Symbols) VarName(c component.Component) string {
@@ -74,12 +86,21 @@ func (s *Symbols) VarName(c component.Component) string {
 }
 
 func (s *Symbols) PkgName(pkgPath string) string {
+	if pkgPath == "" || pkgPath == s.distPkgPath {
+		return ""
+	}
+
 	return s.pkgNames[pkgPath]
 }
 
 func (s *Symbols) Imports() [][]string {
 	imports := make([][]string, 0, len(s.orderedPkgPaths))
+
 	for _, p := range s.orderedPkgPaths {
+		if p == s.distPkgPath {
+			continue
+		}
+
 		imports = append(imports, []string{s.pkgNames[p], p})
 	}
 

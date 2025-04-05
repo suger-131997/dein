@@ -21,7 +21,7 @@ func NewB(a *A) *B {
 
 func TestResolver(t *testing.T) {
 	t.Run("circular dependency", func(tt *testing.T) {
-		r := dein.NewResolver()
+		r := dein.NewResolver("main")
 
 		dein.Register(r, dein.P1(NewA))
 		dein.Register(r, dein.P1(NewB))
@@ -34,7 +34,7 @@ func TestResolver(t *testing.T) {
 		}
 	})
 	t.Run("duplicate component provided", func(tt *testing.T) {
-		r := dein.NewResolver()
+		r := dein.NewResolver("main")
 
 		dein.Register(r, dein.P1(NewA))
 		dein.Register(r, dein.P1(NewA))

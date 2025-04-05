@@ -29,8 +29,12 @@ func (g *ComponentArgumentGenerator) GenerateArgument() string {
 	b.WriteString(" ")
 
 	b.WriteString(g.c.Prefix())
-	b.WriteString(g.symbols.PkgName(g.c.PkgPath()))
-	b.WriteString(".")
+
+	if pkgName := g.symbols.PkgName(g.c.PkgPath()); pkgName != "" {
+		b.WriteString(pkgName)
+		b.WriteString(".")
+	}
+
 	b.WriteString(g.c.Name())
 	writeTypeParams(&b, g.symbols, g.c.TypeParams())
 

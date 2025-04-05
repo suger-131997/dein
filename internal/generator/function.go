@@ -49,8 +49,12 @@ func (g *FunctionGenerator) GenerateArgument() string {
 
 	for i := range len(g.in) {
 		b.WriteString(g.in[i].Prefix())
-		b.WriteString(g.symbols.PkgName(g.in[i].PkgPath()))
-		b.WriteString(".")
+
+		if pkgName := g.symbols.PkgName(g.in[i].PkgPath()); pkgName != "" {
+			b.WriteString(pkgName)
+			b.WriteString(".")
+		}
+
 		b.WriteString(g.in[i].Name())
 		writeTypeParams(&b, g.symbols, g.in[i].TypeParams())
 
@@ -62,8 +66,12 @@ func (g *FunctionGenerator) GenerateArgument() string {
 	b.WriteString(") (")
 
 	b.WriteString(g.out.Prefix())
-	b.WriteString(g.symbols.PkgName(g.out.PkgPath()))
-	b.WriteString(".")
+
+	if pkgName := g.symbols.PkgName(g.out.PkgPath()); pkgName != "" {
+		b.WriteString(pkgName)
+		b.WriteString(".")
+	}
+
 	b.WriteString(g.out.Name())
 	writeTypeParams(&b, g.symbols, g.out.TypeParams())
 

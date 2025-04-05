@@ -22,7 +22,7 @@ func main() {
 	flag.Parse()
 
 	// Create a resolver
-	r := dein.NewResolver()
+	r := dein.NewResolver("main")
 
 	// Register the providers
 	dein.Register(r, dein.Mark(dein.Bind[*car.Car, car.ICar]()))
@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Generate code
-	data, err := gen.Generate("main")
+	data, err := gen.Generate()
 	if err != nil {
 		log.Fatal(err)
 	}

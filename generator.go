@@ -17,7 +17,7 @@ type Generator struct {
 }
 
 // Generate generates a dependency injection source code.
-func (g *Generator) Generate(pkgName string) ([]byte, error) {
+func (g *Generator) Generate() ([]byte, error) {
 	var buf bytes.Buffer
 
 	err := template.Must(template.New("").Parse(tmpl)).Execute(&buf, struct {
@@ -27,7 +27,7 @@ func (g *Generator) Generate(pkgName string) ([]byte, error) {
 		Arguments       func(yield func(string) bool)
 		Bodies          func(yield func(string) bool)
 	}{
-		PkgName: pkgName,
+		PkgName: g.symbols.DistPkgName(),
 		Imports: func(yield func(string, string) bool) {
 			for _, im := range g.symbols.Imports() {
 				if !yield(im[0], im[1]) {

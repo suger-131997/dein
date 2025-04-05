@@ -19,6 +19,7 @@ func TestBindGeneratorGenerateBody(t *testing.T) {
 	tests := []struct {
 		name string
 
+		distPkgPath string
 		bindTo      component.Component
 		implement   component.Component
 		markExposed bool
@@ -28,6 +29,7 @@ func TestBindGeneratorGenerateBody(t *testing.T) {
 		{
 			name: "b.B bind to a.IA1",
 
+			distPkgPath: "main",
 			bindTo: func() component.Component {
 				var ia *a.IA1
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
@@ -40,6 +42,7 @@ func TestBindGeneratorGenerateBody(t *testing.T) {
 		{
 			name: "*b.B bind to a.IA1",
 
+			distPkgPath: "main",
 			bindTo: func() component.Component {
 				var ia *a.IA1
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
@@ -52,6 +55,7 @@ func TestBindGeneratorGenerateBody(t *testing.T) {
 		{
 			name: "mark exposed",
 
+			distPkgPath: "main",
 			bindTo: func() component.Component {
 				var ia *a.IA1
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
@@ -65,6 +69,7 @@ __c.IA1 = iA1`,
 		{
 			name: "generics component with one type parameter",
 
+			distPkgPath: "main",
 			bindTo: func() component.Component {
 				var ia *a.IA2[c.C]
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
@@ -77,6 +82,7 @@ __c.IA1 = iA1`,
 		{
 			name: "generics component with build-in type parameter",
 
+			distPkgPath: "main",
 			bindTo: func() component.Component {
 				var ia *a.IA2[int]
 				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
@@ -86,12 +92,25 @@ __c.IA1 = iA1`,
 
 			want: "var iA2 a.IA2[int] = b",
 		},
+		{
+			name: "dist package the same as bind to component package",
+
+			distPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
+			bindTo: func() component.Component {
+				var ia *a.IA1
+				return testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(ia).Elem()))
+			}(),
+			implement:   testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+			markExposed: false,
+
+			want: "var iA1 IA1 = b",
+		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(tt *testing.T) {
 			gen := generator.NewBindGenerator(
-				symbols.NewSymbols([]component.Component{tc.bindTo, tc.implement}, []string{}),
+				symbols.NewSymbols(tc.distPkgPath, []component.Component{tc.bindTo, tc.implement}, []string{}),
 				tc.bindTo,
 				tc.implement,
 				tc.markExposed,

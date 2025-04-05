@@ -18,6 +18,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 	tests := []struct {
 		name string
 
+		distPkgPath string
 		in          []component.Component
 		out         component.Component
 		hasError    bool
@@ -28,6 +29,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 		{
 			name: "no arguments",
 
+			distPkgPath: "main",
 			in:          []component.Component{},
 			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			hasError:    false,
@@ -38,6 +40,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 		{
 			name: "one argument",
 
+			distPkgPath: "main",
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 			},
@@ -50,6 +53,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 		{
 			name: "two arguments",
 
+			distPkgPath: "main",
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
@@ -63,6 +67,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 		{
 			name: "generics argument",
 
+			distPkgPath: "main",
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[a.A2]{}))),
 			},
@@ -75,6 +80,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 		{
 			name: "pointer argument",
 
+			distPkgPath: "main",
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&a.A2{}))),
 			},
@@ -87,6 +93,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 		{
 			name: "pointer return",
 
+			distPkgPath: "main",
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 			},
@@ -99,6 +106,7 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 		{
 			name: "has error",
 
+			distPkgPath: "main",
 			in:          []component.Component{},
 			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			hasError:    true,
@@ -106,12 +114,25 @@ func TestFunctionGeneratorGenerateArgument(t *testing.T) {
 
 			want: "__funcA1 func() (a.A1, error)",
 		},
+		{
+			name: "in dist package type input and output",
+
+			distPkgPath: "github.com/suger-131997/dein/internal/testpackages/a",
+			in: []component.Component{
+				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
+			},
+			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&a.A1{}))),
+			hasError:    false,
+			markExposed: false,
+
+			want: "__funcA1 func(A2) (*A1)",
+		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(tt *testing.T) {
 			gen := generator.NewFunctionGenerator(
-				symbols.NewSymbols(append(tc.in, tc.out), []string{}),
+				symbols.NewSymbols(tc.distPkgPath, append(tc.in, tc.out), []string{}),
 				tc.in,
 				tc.out,
 				tc.hasError,
@@ -130,6 +151,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 	tests := []struct {
 		name string
 
+		distPkgPath string
 		in          []component.Component
 		out         component.Component
 		hasError    bool
@@ -140,6 +162,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 		{
 			name: "no arguments",
 
+			distPkgPath: "main",
 			in:          []component.Component{},
 			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			hasError:    false,
@@ -150,6 +173,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 		{
 			name: "one argument",
 
+			distPkgPath: "main",
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 			},
@@ -162,6 +186,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 		{
 			name: "two arguments",
 
+			distPkgPath: "main",
 			in: []component.Component{
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A2{}))),
 				testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
@@ -175,6 +200,7 @@ func TestFunctionGeneratorGenerateBody(t *testing.T) {
 		{
 			name: "has error",
 
+			distPkgPath: "main",
 			in:          []component.Component{},
 			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			hasError:    true,
@@ -188,6 +214,7 @@ if err != nil{
 		{
 			name: "mark exposed",
 
+			distPkgPath: "main",
 			in:          []component.Component{},
 			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			hasError:    false,
@@ -200,6 +227,7 @@ __c.A1 = a1`,
 		{
 			name: "has error and mark exposed",
 
+			distPkgPath: "main",
 			in:          []component.Component{},
 			out:         testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			hasError:    true,
@@ -216,7 +244,7 @@ __c.A1 = a1`,
 	for _, tc := range tests {
 		t.Run(tc.name, func(tt *testing.T) {
 			gen := generator.NewFunctionGenerator(
-				symbols.NewSymbols(append(tc.in, tc.out), []string{}),
+				symbols.NewSymbols(tc.distPkgPath, append(tc.in, tc.out), []string{}),
 				tc.in,
 				tc.out,
 				tc.hasError,

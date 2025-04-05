@@ -30,8 +30,8 @@ func writeTypeParams(b *strings.Builder, syms *symbols.Symbols, params []compone
 	for i, p := range params {
 		b.WriteString(p.Prefix())
 
-		if path := p.PkgPath(); path != "" {
-			b.WriteString(syms.PkgName(path))
+		if pkgName := syms.PkgName(p.PkgPath()); pkgName != "" {
+			b.WriteString(pkgName)
 			b.WriteString(".")
 		}
 

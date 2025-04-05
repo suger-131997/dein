@@ -18,6 +18,7 @@ import (
 
 func TestNewSymbols(t *testing.T) {
 	syms := symbols.NewSymbols(
+		"main",
 		[]component.Component{
 			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
 			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[b.B]{}))),
@@ -27,6 +28,13 @@ func TestNewSymbols(t *testing.T) {
 		},
 		[]string{"github.com/suger-131997/dein/internal/testpackages/x"},
 	)
+
+	t.Run("get dist pkg name", func(tt *testing.T) {
+		want := "main"
+		if got := syms.DistPkgName(); got != want {
+			tt.Errorf("DistPkgName() = %s, want %s", got, want)
+		}
+	})
 
 	t.Run("get var name", func(tt *testing.T) {
 		want := "b"
@@ -89,6 +97,44 @@ func TestNewSymbols(t *testing.T) {
 		got := syms.Imports()
 
 		if diff := cmp.Diff(got, want); diff != "" {
+			tt.Errorf("Imports() is mismatch (-got +want):\n%s", diff)
+		}
+	})
+}
+
+func TestSymbols_SpecificDistPkg(t *testing.T) {
+	syms := symbols.NewSymbols(
+		"github.com/suger-131997/dein/internal/testpackages/b",
+		[]component.Component{
+			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+		},
+		[]string{},
+	)
+
+	t.Run("get dist pkg name", func(tt *testing.T) {
+		want := "b"
+		if got := syms.DistPkgName(); got != want {
+			tt.Errorf("DistPkgName() = %s, want %s", got, want)
+		}
+	})
+
+	t.Run("get var name", func(tt *testing.T) {
+		want := "b_2"
+		if got := syms.VarName(testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{})))); got != want {
+			tt.Errorf("VarName() = %s, want %s", got, want)
+		}
+	})
+
+	t.Run("get pkg name", func(tt *testing.T) {
+		want := ""
+		if got := syms.PkgName("github.com/suger-131997/dein/internal/testpackages/b"); got != want {
+			tt.Errorf("VarName() = %s, want %s", got, want)
+		}
+	})
+
+	t.Run("get imports", func(tt *testing.T) {
+		if diff := cmp.Diff(syms.Imports(), [][]string{{"a", "github.com/suger-131997/dein/internal/testpackages/a"}}); diff != "" {
 			tt.Errorf("Imports() is mismatch (-got +want):\n%s", diff)
 		}
 	})

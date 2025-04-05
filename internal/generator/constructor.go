@@ -55,8 +55,11 @@ func (g *ConstructorGenerator) GenerateBody() string {
 
 	b.WriteString(" := ")
 
-	b.WriteString(g.symbols.PkgName(g.constructorPkgPath))
-	b.WriteString(".")
+	if pkgName := g.symbols.PkgName(g.constructorPkgPath); pkgName != "" {
+		b.WriteString(pkgName)
+		b.WriteString(".")
+	}
+
 	b.WriteString(g.constructorName)
 	b.WriteString("(")
 
