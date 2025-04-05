@@ -28,6 +28,10 @@ func writeTypeParams(b *strings.Builder, syms *symbols.Symbols, params []compone
 	b.WriteString("[")
 
 	for i, p := range params {
+		if p.IsPointer() {
+			b.WriteString("*")
+		}
+
 		if path := p.PkgPath(); path != "" {
 			b.WriteString(syms.PkgName(path))
 			b.WriteString(".")

@@ -38,6 +38,13 @@ func TestWriteTypeParams(t *testing.T) {
 			want: "[b.B]",
 		},
 		{
+			name: "one pointer type params",
+
+			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*b.B]{}))),
+
+			want: "[*b.B]",
+		},
+		{
 			name: "two type params",
 
 			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A4[b.B, c.C]{}))),
@@ -50,6 +57,13 @@ func TestWriteTypeParams(t *testing.T) {
 			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[int]{}))),
 
 			want: "[int]",
+		},
+		{
+			name: "build-in pointer type params",
+
+			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*int]{}))),
+
+			want: "[*int]",
 		},
 		{
 			name: "nest type params",
