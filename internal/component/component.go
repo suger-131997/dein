@@ -30,6 +30,10 @@ func NewComponent(t reflect.Type) (Component, error) {
 		t = t.Elem()
 	}
 
+	if t.Kind() == reflect.Map {
+		return Component{}, errors.New("map type is not supported")
+	}
+
 	if t.PkgPath() == "" {
 		if t.Name() == "" {
 			return Component{}, errors.New("anonymous struct is not supported")
@@ -52,11 +56,34 @@ func NewComponent(t reflect.Type) (Component, error) {
 		}
 	}
 
-	return Component{
+	c := Component{
 		name:    name,
 		pkgPath: t.PkgPath(),
 		prefix:  prefix,
-	}, nil
+	}
+
+	var err error
+
+	func() {
+		defer func() {
+			if r := recover(); r != nil {
+				errMsg, ok := r.(string)
+				if !ok {
+					err = errors.New("unknown panic")
+					return
+				}
+
+				err = errors.New(errMsg)
+			}
+		}()
+		c.TypeParams()
+	}()
+
+	if err != nil {
+		return Component{}, err
+	}
+
+	return c, nil
 }
 
 func (c Component) Less(other Component) bool {
@@ -129,6 +156,10 @@ func newTypeParams(rawTypeStr string) TypeParam {
 
 	prefix := rawTypeStr[:pi]
 	typeStr := rawTypeStr[pi:]
+
+	if strings.HasPrefix(typeStr, "map[") {
+		panic("map type is not supported in type param")
+	}
 
 	if strings.Count(path.Base(typeStr), ".") == 0 {
 		return TypeParam{

@@ -109,6 +109,16 @@ func TestNewComponent(t *testing.T) {
 			in:      reflect.TypeOf(testGenericsComponent[struct{ Name string }]{}),
 			wantErr: errors.New("anonymous struct for type param is not supported"),
 		},
+		{
+			name:    "map type is not supported",
+			in:      reflect.TypeOf(map[testComponent]testComponent{}),
+			wantErr: errors.New("map type is not supported"),
+		},
+		{
+			name:    "map type is not supported in type param",
+			in:      reflect.TypeOf(testGenericsComponent[map[testComponent]testComponent]{}),
+			wantErr: errors.New("map type is not supported in type param"),
+		},
 	}
 
 	for _, tc := range tests {
