@@ -48,10 +48,7 @@ func (g *FunctionGenerator) GenerateArgument() string {
 	b.WriteString(" func(")
 
 	for i := range len(g.in) {
-		if g.in[i].IsPointer() {
-			b.WriteString("*")
-		}
-
+		b.WriteString(g.in[i].Prefix())
 		b.WriteString(g.symbols.PkgName(g.in[i].PkgPath()))
 		b.WriteString(".")
 		b.WriteString(g.in[i].Name())
@@ -64,10 +61,7 @@ func (g *FunctionGenerator) GenerateArgument() string {
 
 	b.WriteString(") (")
 
-	if g.out.IsPointer() {
-		b.WriteString("*")
-	}
-
+	b.WriteString(g.out.Prefix())
 	b.WriteString(g.symbols.PkgName(g.out.PkgPath()))
 	b.WriteString(".")
 	b.WriteString(g.out.Name())

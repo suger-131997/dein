@@ -45,6 +45,27 @@ func TestWriteTypeParams(t *testing.T) {
 			want: "[*b.B]",
 		},
 		{
+			name: "one pointer of pointer type params",
+
+			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[**b.B]{}))),
+
+			want: "[**b.B]",
+		},
+		{
+			name: "one array type params",
+
+			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[[]b.B]{}))),
+
+			want: "[[]b.B]",
+		},
+		{
+			name: "one array pointer type params",
+
+			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[*[]b.B]{}))),
+
+			want: "[*[]b.B]",
+		},
+		{
 			name: "two type params",
 
 			in: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A4[b.B, c.C]{}))),

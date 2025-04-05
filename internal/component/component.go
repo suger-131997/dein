@@ -10,14 +10,23 @@ import (
 )
 
 type Component struct {
-	name      string
-	pkgPath   string
-	isPointer bool
+	name    string
+	pkgPath string
+	prefix  string
 }
 
 func NewComponent(t reflect.Type) (Component, error) {
-	isPointer := t.Kind() == reflect.Ptr
-	if isPointer {
+	prefix := ""
+
+	for t.Kind() == reflect.Slice || t.Kind() == reflect.Array || t.Kind() == reflect.Ptr {
+		if t.Kind() == reflect.Ptr {
+			prefix += "*"
+		}
+
+		if t.Kind() == reflect.Slice || t.Kind() == reflect.Array {
+			prefix += "[]"
+		}
+
 		t = t.Elem()
 	}
 
@@ -44,9 +53,9 @@ func NewComponent(t reflect.Type) (Component, error) {
 	}
 
 	return Component{
-		name:      name,
-		pkgPath:   t.PkgPath(),
-		isPointer: isPointer,
+		name:    name,
+		pkgPath: t.PkgPath(),
+		prefix:  prefix,
 	}, nil
 }
 
@@ -59,8 +68,8 @@ func (c Component) Less(other Component) bool {
 		return c.name < other.name
 	}
 
-	if c.isPointer {
-		return false
+	if c.prefix != other.prefix {
+		return c.prefix < other.prefix
 	}
 
 	return true
@@ -78,8 +87,8 @@ func (c Component) PkgPath() string {
 	return c.pkgPath
 }
 
-func (c Component) IsPointer() bool {
-	return c.isPointer
+func (c Component) Prefix() string {
+	return c.prefix
 }
 
 func (c Component) TypeParams() []TypeParam {
@@ -106,25 +115,26 @@ func (c Component) PkgPaths() []string {
 }
 
 type TypeParam struct {
-	name      string
-	pkgPath   string
-	isPointer bool
+	name    string
+	pkgPath string
+	prefix  string
 }
 
-func newTypeParams(typeStr string) TypeParam {
-	if strings.Count(path.Base(typeStr), ".") == 0 {
-		if typeStr[0] == '*' {
-			return TypeParam{
-				name:      typeStr[1:],
-				pkgPath:   "",
-				isPointer: true,
-			}
-		}
+func newTypeParams(rawTypeStr string) TypeParam {
+	pi := 0
 
+	for rawTypeStr[pi] == '[' || rawTypeStr[pi] == ']' || rawTypeStr[pi] == '*' {
+		pi++
+	}
+
+	prefix := rawTypeStr[:pi]
+	typeStr := rawTypeStr[pi:]
+
+	if strings.Count(path.Base(typeStr), ".") == 0 {
 		return TypeParam{
-			name:      typeStr,
-			pkgPath:   "",
-			isPointer: false,
+			name:    typeStr,
+			pkgPath: "",
+			prefix:  prefix,
 		}
 	}
 
@@ -135,18 +145,10 @@ func newTypeParams(typeStr string) TypeParam {
 		i = strings.LastIndex(typeStr, ".")
 	}
 
-	if typeStr[0] == '*' {
-		return TypeParam{
-			name:      typeStr[i+1:],
-			pkgPath:   typeStr[1:i],
-			isPointer: true,
-		}
-	}
-
 	return TypeParam{
-		name:      typeStr[i+1:],
-		pkgPath:   typeStr[:i],
-		isPointer: false,
+		name:    typeStr[i+1:],
+		pkgPath: typeStr[:i],
+		prefix:  prefix,
 	}
 }
 
@@ -162,8 +164,8 @@ func (t TypeParam) PkgPath() string {
 	return t.pkgPath
 }
 
-func (t TypeParam) IsPointer() bool {
-	return t.isPointer
+func (t TypeParam) Prefix() string {
+	return t.prefix
 }
 
 func (t TypeParam) TypeParams() []TypeParam {

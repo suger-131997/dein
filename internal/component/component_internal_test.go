@@ -27,36 +27,63 @@ func TestNewComponent(t *testing.T) {
 			name: "testComponent",
 			in:   reflect.TypeOf(testComponent{}),
 			want: Component{
-				name:      "testComponent",
-				pkgPath:   "github.com/suger-131997/dein/internal/component",
-				isPointer: false,
+				name:    "testComponent",
+				pkgPath: "github.com/suger-131997/dein/internal/component",
+				prefix:  "",
 			},
 		},
 		{
 			name: "&testComponent",
 			in:   reflect.TypeOf(&testComponent{}),
 			want: Component{
-				name:      "testComponent",
-				pkgPath:   "github.com/suger-131997/dein/internal/component",
-				isPointer: true,
+				name:    "testComponent",
+				pkgPath: "github.com/suger-131997/dein/internal/component",
+				prefix:  "*",
 			},
 		},
 		{
 			name: "testGenericsComponent[testComponent]",
 			in:   reflect.TypeOf(testGenericsComponent[testComponent]{}),
 			want: Component{
-				name:      "testGenericsComponent[github.com/suger-131997/dein/internal/component.testComponent]",
-				pkgPath:   "github.com/suger-131997/dein/internal/component",
-				isPointer: false,
+				name:    "testGenericsComponent[github.com/suger-131997/dein/internal/component.testComponent]",
+				pkgPath: "github.com/suger-131997/dein/internal/component",
+				prefix:  "",
 			},
 		},
 		{
 			name: "testGenericsComponent[*testComponent]",
 			in:   reflect.TypeOf(testGenericsComponent[*testComponent]{}),
 			want: Component{
-				name:      "testGenericsComponent[*github.com/suger-131997/dein/internal/component.testComponent]",
-				pkgPath:   "github.com/suger-131997/dein/internal/component",
-				isPointer: false,
+				name:    "testGenericsComponent[*github.com/suger-131997/dein/internal/component.testComponent]",
+				pkgPath: "github.com/suger-131997/dein/internal/component",
+				prefix:  "",
+			},
+		},
+		{
+			name: "[]testComponent",
+			in:   reflect.TypeOf([]testComponent{}),
+			want: Component{
+				name:    "testComponent",
+				pkgPath: "github.com/suger-131997/dein/internal/component",
+				prefix:  "[]",
+			},
+		},
+		{
+			name: "**testComponent",
+			in:   reflect.TypeOf(new(*testComponent)),
+			want: Component{
+				name:    "testComponent",
+				pkgPath: "github.com/suger-131997/dein/internal/component",
+				prefix:  "**",
+			},
+		},
+		{
+			name: "*[]*testComponent",
+			in:   reflect.TypeOf(&[]*testComponent{}),
+			want: Component{
+				name:    "testComponent",
+				pkgPath: "github.com/suger-131997/dein/internal/component",
+				prefix:  "*[]*",
 			},
 		},
 		{
@@ -127,7 +154,7 @@ func TestComponentTypeParams(t *testing.T) {
 
 			in: reflect.TypeOf(testGenericsComponent[testComponent]{}),
 
-			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: false}},
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: ""}},
 		},
 		{
 			name: "two type params",
@@ -135,9 +162,16 @@ func TestComponentTypeParams(t *testing.T) {
 			in: reflect.TypeOf(testMultiGenericsComponent[testComponent, int]{}),
 
 			want: []TypeParam{
-				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: false},
-				{name: "int", pkgPath: "", isPointer: false},
+				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: ""},
+				{name: "int", pkgPath: "", prefix: ""},
 			},
+		},
+		{
+			name: "one pointer of pointer type params",
+
+			in: reflect.TypeOf(testGenericsComponent[**testComponent]{}),
+
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: "**"}},
 		},
 		{
 			name: "two pointer type params",
@@ -145,23 +179,37 @@ func TestComponentTypeParams(t *testing.T) {
 			in: reflect.TypeOf(testMultiGenericsComponent[*testComponent, *int]{}),
 
 			want: []TypeParam{
-				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: true},
-				{name: "int", pkgPath: "", isPointer: true},
+				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: "*"},
+				{name: "int", pkgPath: "", prefix: "*"},
 			},
+		},
+		{
+			name: "one array type params",
+
+			in: reflect.TypeOf(testGenericsComponent[[]testComponent]{}),
+
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: "[]"}},
+		},
+		{
+			name: "one array pointer type params",
+
+			in: reflect.TypeOf(testGenericsComponent[*[]*testComponent]{}),
+
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: "*[]*"}},
 		},
 		{
 			name: "nest type params",
 
 			in: reflect.TypeOf(testGenericsComponent[testGenericsComponent[testGenericsComponent[int]]]{}),
 
-			want: []TypeParam{{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[int]]", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: false}},
+			want: []TypeParam{{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[int]]", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: ""}},
 		},
 		{
 			name: "nest pointer type params",
 
 			in: reflect.TypeOf(testGenericsComponent[testGenericsComponent[*testGenericsComponent[*int]]]{}),
 
-			want: []TypeParam{{name: "testGenericsComponent[*github.com/suger-131997/dein/internal/component.testGenericsComponent[*int]]", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: false}},
+			want: []TypeParam{{name: "testGenericsComponent[*github.com/suger-131997/dein/internal/component.testGenericsComponent[*int]]", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: ""}},
 		},
 	}
 
@@ -193,43 +241,57 @@ func TestTypeParamTypeParams(t *testing.T) {
 		{
 			name: "no type params",
 
-			in: TypeParam{name: "testComponent", isPointer: false},
+			in: TypeParam{name: "testComponent", prefix: ""},
 
 			want: []TypeParam{},
 		},
 		{
 			name: "one type params",
 
-			in: TypeParam{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testComponent]", isPointer: false},
+			in: TypeParam{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testComponent]", prefix: ""},
 
-			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: false}},
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: ""}},
 		},
 		{
 			name: "two type params",
 
-			in: TypeParam{name: "testMultiGenericsComponent[github.com/suger-131997/dein/internal/component.testComponent,int]", isPointer: false},
+			in: TypeParam{name: "testMultiGenericsComponent[github.com/suger-131997/dein/internal/component.testComponent,int]", prefix: ""},
 
 			want: []TypeParam{
-				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: false},
-				{name: "int", pkgPath: "", isPointer: false},
+				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: ""},
+				{name: "int", pkgPath: "", prefix: ""},
 			},
+		},
+		{
+			name: "one pointer of pointer type params",
+
+			in: TypeParam{name: "testGenericsComponent[**github.com/suger-131997/dein/internal/component.testComponent]", prefix: ""},
+
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: "**"}},
 		},
 		{
 			name: "two pointer type params",
 
-			in: TypeParam{name: "testMultiGenericsComponent[*github.com/suger-131997/dein/internal/component.testComponent,*int]", isPointer: false},
+			in: TypeParam{name: "testMultiGenericsComponent[*github.com/suger-131997/dein/internal/component.testComponent,*int]", prefix: ""},
 
 			want: []TypeParam{
-				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: true},
-				{name: "int", pkgPath: "", isPointer: true},
+				{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: "*"},
+				{name: "int", pkgPath: "", prefix: "*"},
 			},
+		},
+		{
+			name: "one array type params",
+
+			in: TypeParam{name: "testGenericsComponent[[]github.com/suger-131997/dein/internal/component.testComponent]", prefix: ""},
+
+			want: []TypeParam{{name: "testComponent", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: "[]"}},
 		},
 		{
 			name: "nest type params",
 
 			in: TypeParam{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[int]]]"},
 
-			want: []TypeParam{{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[int]]", pkgPath: "github.com/suger-131997/dein/internal/component", isPointer: false}},
+			want: []TypeParam{{name: "testGenericsComponent[github.com/suger-131997/dein/internal/component.testGenericsComponent[int]]", pkgPath: "github.com/suger-131997/dein/internal/component", prefix: ""}},
 		},
 	}
 

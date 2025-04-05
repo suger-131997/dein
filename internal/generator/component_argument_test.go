@@ -31,6 +31,20 @@ func TestComponentArgumentGeneratorGenerate(t *testing.T) {
 			want: "a1 a.A1",
 		},
 		{
+			name: "pointer of pointers component",
+
+			c: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(new(*a.A1)))),
+
+			want: "a1 **a.A1",
+		},
+		{
+			name: "array component",
+
+			c: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf([]a.A1{}))),
+
+			want: "a1 []a.A1",
+		},
+		{
 			name: "pointer component",
 
 			c: testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&a.A1{}))),

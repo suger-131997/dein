@@ -28,10 +28,7 @@ func (g *ComponentArgumentGenerator) GenerateArgument() string {
 
 	b.WriteString(" ")
 
-	if g.c.IsPointer() {
-		b.WriteString("*")
-	}
-
+	b.WriteString(g.c.Prefix())
 	b.WriteString(g.symbols.PkgName(g.c.PkgPath()))
 	b.WriteString(".")
 	b.WriteString(g.c.Name())
