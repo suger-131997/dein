@@ -16,6 +16,8 @@ type Component struct {
 	prefix  string
 }
 
+var mapRegex = regexp.MustCompile(`[]*,]*map\[`)
+
 func NewComponent(t reflect.Type) (Component, error) {
 	prefix := ""
 
@@ -54,7 +56,7 @@ func NewComponent(t reflect.Type) (Component, error) {
 			return Component{}, errors.New("anonymous struct for type param is not supported")
 		}
 
-		if regexp.MustCompile(`[]*,]*map\[`).MatchString(typeParams) {
+		if mapRegex.MatchString(typeParams) {
 			return Component{}, errors.New("map type is not supported in type param")
 		}
 	}
