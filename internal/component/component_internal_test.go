@@ -119,6 +119,21 @@ func TestNewComponent(t *testing.T) {
 			in:      reflect.TypeOf(testGenericsComponent[map[testComponent]testComponent]{}),
 			wantErr: errors.New("map type is not supported in type param"),
 		},
+		{
+			name:    "array map type is not supported in type param",
+			in:      reflect.TypeOf(testGenericsComponent[[]map[testComponent]testComponent]{}),
+			wantErr: errors.New("map type is not supported in type param"),
+		},
+		{
+			name:    "pointer map type is not supported in type param",
+			in:      reflect.TypeOf(testGenericsComponent[*map[testComponent]testComponent]{}),
+			wantErr: errors.New("map type is not supported in type param"),
+		},
+		{
+			name:    "map type is not supported in type param with another type",
+			in:      reflect.TypeOf(testMultiGenericsComponent[int, *map[testComponent]testComponent]{}),
+			wantErr: errors.New("map type is not supported in type param"),
+		},
 	}
 
 	for _, tc := range tests {

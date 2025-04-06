@@ -4,6 +4,7 @@ import (
 	"errors"
 	"path"
 	"reflect"
+	"regexp"
 	"strings"
 
 	"github.com/suger-131997/dein/internal/utils"
@@ -48,11 +49,13 @@ func NewComponent(t reflect.Type) (Component, error) {
 	}
 
 	if i := strings.Index(name, "["); i >= 0 {
-		params := strings.Split(name[i+1:len(name)-1], ",")
-		for _, p := range params {
-			if strings.Contains(p, " ") {
-				return Component{}, errors.New("anonymous struct for type param is not supported")
-			}
+		typeParams := name[i+1 : len(name)-1]
+		if strings.Contains(typeParams, " ") {
+			return Component{}, errors.New("anonymous struct for type param is not supported")
+		}
+
+		if regexp.MustCompile(`[]*,]*map\[`).MatchString(typeParams) {
+			return Component{}, errors.New("map type is not supported in type param")
 		}
 	}
 
@@ -60,27 +63,6 @@ func NewComponent(t reflect.Type) (Component, error) {
 		name:    name,
 		pkgPath: t.PkgPath(),
 		prefix:  prefix,
-	}
-
-	var err error
-
-	func() {
-		defer func() {
-			if r := recover(); r != nil {
-				errMsg, ok := r.(string)
-				if !ok {
-					err = errors.New("unknown panic")
-					return
-				}
-
-				err = errors.New(errMsg)
-			}
-		}()
-		c.TypeParams()
-	}()
-
-	if err != nil {
-		return Component{}, err
 	}
 
 	return c, nil
@@ -156,10 +138,6 @@ func newTypeParams(rawTypeStr string) TypeParam {
 
 	prefix := rawTypeStr[:pi]
 	typeStr := rawTypeStr[pi:]
-
-	if strings.HasPrefix(typeStr, "map[") {
-		panic("map type is not supported in type param")
-	}
 
 	if strings.Count(path.Base(typeStr), ".") == 0 {
 		return TypeParam{
