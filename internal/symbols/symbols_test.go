@@ -16,6 +16,42 @@ import (
 	"github.com/suger-131997/dein/internal/testutils"
 )
 
+func Test_NewSymbols(t *testing.T) {
+	tests := []struct {
+		name string
+
+		symbols *symbols.Symbols
+
+		wantDistPkgName string
+	}{
+		{
+			name: "normal case",
+
+			symbols: symbols.NewSymbols(
+				"main",
+				[]component.Component{
+					testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+					testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A3[b.B]{}))),
+					testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a2.A1{}))),
+					testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(b.B{}))),
+					testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A4[int, c.C]{}))),
+				},
+				[]string{"github.com/suger-131997/dein/internal/testpackages/x"},
+			),
+
+			wantDistPkgName: "main",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := tc.symbols.DistPkgName(); got != tc.wantDistPkgName {
+				t.Errorf("DistPkgName() = %s, want %s", got, tc.wantDistPkgName)
+			}
+		})
+	}
+}
+
 func TestNewSymbols(t *testing.T) {
 	syms := symbols.NewSymbols(
 		"main",
@@ -102,7 +138,7 @@ func TestNewSymbols(t *testing.T) {
 	})
 }
 
-func TestSymbols_SpecificDistPkg(t *testing.T) {
+func TestNewSymbols_SpecificDistPkg(t *testing.T) {
 	syms := symbols.NewSymbols(
 		"github.com/suger-131997/dein/internal/testpackages/b",
 		[]component.Component{
@@ -134,8 +170,34 @@ func TestSymbols_SpecificDistPkg(t *testing.T) {
 	})
 
 	t.Run("get imports", func(tt *testing.T) {
-		if diff := cmp.Diff(syms.Imports(), [][]string{{"a", "github.com/suger-131997/dein/internal/testpackages/a"}}); diff != "" {
+		want := [][]string{{"a", "github.com/suger-131997/dein/internal/testpackages/a"}}
+		if diff := cmp.Diff(syms.Imports(), want); diff != "" {
 			tt.Errorf("Imports() is mismatch (-got +want):\n%s", diff)
+		}
+	})
+}
+
+func TestNewSymbols_DuplicatedVarName(t *testing.T) {
+	syms := symbols.NewSymbols(
+		"github.com/suger-131997/dein/internal/testpackages/b",
+		[]component.Component{
+			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1_2{}))),
+			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{}))),
+			testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&a.A1{}))),
+		},
+		[]string{},
+	)
+
+	t.Run("get dist pkg name", func(tt *testing.T) {
+		want := []string{"a1", "a1_2", "a1_2_2"}
+
+		got := make([]string, 0, len(want))
+		got = append(got, syms.VarName(testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1{})))))
+		got = append(got, syms.VarName(testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(&a.A1{})))))
+		got = append(got, syms.VarName(testutils.Must[component.Component](t)(component.NewComponent(reflect.TypeOf(a.A1_2{})))))
+
+		if diff := cmp.Diff(got, want); diff != "" {
+			tt.Errorf("VarName() is mismatch (-got +want):\n%s", diff)
 		}
 	})
 }

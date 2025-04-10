@@ -2,6 +2,7 @@ package a
 
 type (
 	A1               struct{}
+	A1_2             struct{}
 	A2               struct{}
 	A3[T any]        struct{}
 	A4[T any, U any] struct{}

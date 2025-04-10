@@ -30,24 +30,13 @@ func NewSymbols(distPkgPath string, _components []component.Component, _pkgPaths
 	pkgPaths = utils.Uniq(append(pkgPaths, _pkgPaths...))
 	sort.Strings(pkgPaths)
 
-	nameCounts := make(map[string]int)
-	nameCounts[path.Base(distPkgPath)] = 1
+	n := newNamer(path.Base(distPkgPath))
 
 	varNames := make(map[component.Component]string, len(components))
 
 	for _, c := range components {
 		name := utils.HeadToLower(c.Name())
-		varNames[c] = name
-
-		if count, ok := nameCounts[name]; ok {
-			varNames[c] = fmt.Sprintf("%s_%d", name, count+1)
-			nameCounts[name] = count + 1
-
-			continue
-		}
-
-		varNames[c] = name
-		nameCounts[name] = 1
+		varNames[c] = n.name(name)
 	}
 
 	pkgNames := make(map[string]string, len(pkgPaths))
@@ -57,16 +46,7 @@ func NewSymbols(distPkgPath string, _components []component.Component, _pkgPaths
 			continue
 		}
 
-		pkgName := path.Base(p)
-		if count, ok := nameCounts[pkgName]; ok {
-			pkgNames[p] = fmt.Sprintf("%s_%d", pkgName, count+1)
-			nameCounts[pkgName] = count + 1
-
-			continue
-		}
-
-		pkgNames[p] = pkgName
-		nameCounts[pkgName] = 1
+		pkgNames[p] = n.name(path.Base(p))
 	}
 
 	return &Symbols{
@@ -105,4 +85,55 @@ func (s *Symbols) Imports() [][]string {
 	}
 
 	return imports
+}
+
+type namer struct {
+	names map[string]struct{}
+	count map[string]int
+}
+
+func newNamer(inits ...string) *namer {
+	names := make(map[string]struct{}, len(inits))
+	count := make(map[string]int, len(inits))
+
+	for _, init := range inits {
+		names[init] = struct{}{}
+		count[init] = 1
+	}
+
+	return &namer{
+		names: names,
+		count: count,
+	}
+}
+
+func (n *namer) name(name string) string {
+	if _, exists := n.names[name]; exists {
+		count, ok := n.count[name]
+		if !ok {
+			count = 1
+		}
+
+		offset := 1
+
+		for {
+			if _, dupl := n.names[fmt.Sprintf("%s_%d", name, count+offset)]; !dupl {
+				break
+			}
+
+			offset++
+		}
+
+		n.count[name] = count + offset
+
+		newName := fmt.Sprintf("%s_%d", name, n.count[name])
+		n.names[newName] = struct{}{}
+
+		return newName
+	}
+
+	n.names[name] = struct{}{}
+	n.count[name] = 1
+
+	return name
 }
