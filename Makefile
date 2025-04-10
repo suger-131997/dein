@@ -1,14 +1,14 @@
 .PHONY: install-tools
 install-tools:
-	@go mod download -modfile=golangci-lint.mod
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(GOPATH)/bin v1.64.8
 
 .PHONY: lint
-lint: install-tools
-	go tool -modfile=golangci-lint.mod golangci-lint run
+lint:
+	golangci-lint run
 
 .PHONY: lint-fix
-lint-fix: install-tools
-	go tool -modfile=golangci-lint.mod golangci-lint run --fix
+lint-fix:
+	golangci-lint --fix
 
 .PHONY: test
 test:
