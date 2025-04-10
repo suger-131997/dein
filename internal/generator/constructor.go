@@ -5,7 +5,6 @@ import (
 
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/symbols"
-	"github.com/suger-131997/dein/internal/utils"
 )
 
 type ConstructorGenerator struct {
@@ -79,7 +78,7 @@ func (g *ConstructorGenerator) GenerateBody() string {
 
 	if g.markExposed {
 		b.WriteString("\n__c.")
-		b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.out)))
+		b.WriteString(g.symbols.VarName(g.out))
 		b.WriteString(" = ")
 		b.WriteString(g.symbols.VarName(g.out))
 	}

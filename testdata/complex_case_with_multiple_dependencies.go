@@ -8,7 +8,11 @@ import (
 )
 
 type Container struct {
-	C *c_2.C
+	c *c_2.C
+}
+
+func (c *Container) C() *c_2.C {
+	return c.c
 }
 
 func NewContainer(
@@ -26,7 +30,7 @@ func NewContainer(
 	if err != nil {
 		return nil, err
 	}
-	__c.C = c
+	__c.c = c
 
 	return __c, nil
 }

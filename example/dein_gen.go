@@ -9,7 +9,11 @@ import (
 )
 
 type Container struct {
-	ICar car_2.ICar
+	iCar car_2.ICar
+}
+
+func (c *Container) ICar() car_2.ICar {
+	return c.iCar
 }
 
 func NewContainer(
@@ -26,7 +30,7 @@ func NewContainer(
 	wheel := wheel_2.NewWheel()
 	car := car_2.NewCar(engine, wheel, light)
 	var iCar car_2.ICar = car
-	__c.ICar = iCar
+	__c.iCar = iCar
 
 	return __c, nil
 }

@@ -18,6 +18,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	myCar := c.ICar
+	myCar := c.ICar()
 	myCar.Run()
 }

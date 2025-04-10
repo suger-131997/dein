@@ -99,7 +99,7 @@ if err != nil{
 			markExposed:        true,
 
 			want: `a1 := a.NewA1()
-__c.A1 = a1`,
+__c.a1 = a1`,
 		},
 		{
 			name: "has error and mark exposed",
@@ -116,7 +116,7 @@ __c.A1 = a1`,
 if err != nil{
 	return nil, err
 }
-__c.A1 = a1`,
+__c.a1 = a1`,
 		},
 		{
 			name: "dist package the same as constructor package",

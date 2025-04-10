@@ -7,7 +7,11 @@ import (
 )
 
 type Container struct {
-	B *b_2.B
+	b *b_2.B
+}
+
+func (c *Container) B() *b_2.B {
+	return c.b
 }
 
 func NewContainer() (*Container, error) {
@@ -15,7 +19,7 @@ func NewContainer() (*Container, error) {
 
 	a1 := a.NewA1()
 	b := b_2.NewB(a1)
-	__c.B = b
+	__c.b = b
 
 	return __c, nil
 }

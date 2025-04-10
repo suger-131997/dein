@@ -64,7 +64,7 @@ func TestBindGeneratorGenerateBody(t *testing.T) {
 			markExposed: true,
 
 			want: `var iA1 a.IA1 = b
-__c.IA1 = iA1`,
+__c.iA1 = iA1`,
 		},
 		{
 			name: "generics component with one type parameter",

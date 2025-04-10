@@ -6,14 +6,18 @@ import (
 )
 
 type Container struct {
-	A1 a.A1
+	a1 a.A1
+}
+
+func (c *Container) A1() a.A1 {
+	return c.a1
 }
 
 func NewContainer() (*Container, error) {
 	__c := &Container{}
 
 	a1 := a.NewA1()
-	__c.A1 = a1
+	__c.a1 = a1
 
 	return __c, nil
 }

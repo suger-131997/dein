@@ -21,11 +21,12 @@ func (g *Generator) Generate() ([]byte, error) {
 	var buf bytes.Buffer
 
 	err := template.Must(template.New("").Parse(tmpl)).Execute(&buf, struct {
-		PkgName         string
-		Imports         func(yield func(string, string) bool)
-		ContainerFields func(yield func(string) bool)
-		Arguments       func(yield func(string) bool)
-		Bodies          func(yield func(string) bool)
+		PkgName          string
+		Imports          func(yield func(string, string) bool)
+		ContainerFields  func(yield func(string) bool)
+		ContainerMethods func(yield func(string) bool)
+		Arguments        func(yield func(string) bool)
+		Bodies           func(yield func(string) bool)
 	}{
 		PkgName: g.symbols.DistPkgName(),
 		Imports: func(yield func(string, string) bool) {
@@ -37,7 +38,14 @@ func (g *Generator) Generate() ([]byte, error) {
 		},
 		ContainerFields: func(yield func(string) bool) {
 			for _, gen := range g.containerGenerators {
-				if !yield(gen.Generate()) {
+				if !yield(gen.GenerateField()) {
+					break
+				}
+			}
+		},
+		ContainerMethods: func(yield func(string) bool) {
+			for _, gen := range g.containerGenerators {
+				if !yield(gen.GenerateMethod()) {
 					break
 				}
 			}
@@ -77,6 +85,10 @@ type Container struct {
 	{{.}}
 {{end -}}
 }
+
+{{range .ContainerMethods -}}
+	{{.}}
+{{end}}
 
 func NewContainer(
 {{range .Arguments -}}

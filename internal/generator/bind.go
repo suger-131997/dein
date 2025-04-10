@@ -5,7 +5,6 @@ import (
 
 	"github.com/suger-131997/dein/internal/component"
 	"github.com/suger-131997/dein/internal/symbols"
-	"github.com/suger-131997/dein/internal/utils"
 )
 
 type BindGenerator struct {
@@ -51,7 +50,7 @@ func (g BindGenerator) GenerateBody() string {
 
 	if g.markExposed {
 		b.WriteString("\n__c.")
-		b.WriteString(utils.HeadToUpper(g.symbols.VarName(g.bindTo)))
+		b.WriteString(g.symbols.VarName(g.bindTo))
 		b.WriteString(" = ")
 		b.WriteString(g.symbols.VarName(g.bindTo))
 	}
