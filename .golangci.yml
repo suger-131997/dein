@@ -1,26 +1,28 @@
-version: "2"
-
 run:
   timeout: 5m
 
 linters:
-  default: standard
+  disable-all: true
   enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gci
+    - gofumpt
     - unconvert
     - whitespace
     - wsl
 
-formatters:
-  enable:
-    - gci
-    - gofumpt
-  settings:
-    gci:
-      sections:
-        - "standard"
-        - "default"
-        - "prefix(github.com/suger-131997/dein)"
-        - "blank"
-        - "dot"
-    gofumpt:
-      extra-rules: true
+linters-settings:
+  gci:
+    sections:
+      - "standard"
+      - "default"
+      - "prefix(github.com/suger-131997/dein)"
+      - "blank"
+      - "dot"
+  gofumpt:
+    extra-rules: true
